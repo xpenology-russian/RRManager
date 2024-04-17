@@ -1,6 +1,9 @@
+import synoApiProvider from "../../utils/synoApiProvider";
+
 export default
 Ext.define("SYNOCOMMUNITY.RRManager.UpdateWizard.Utils.Step", {
     extend: "SYNO.SDS.Wizard.Step",
+    synoApiProvider: SYNOCOMMUNITY.RRManager.SynoApiProvider,
     autoHideBanner: false,
     constructor: function (a) {
         if (!a.layout) {
@@ -28,7 +31,6 @@ Ext.define("SYNOCOMMUNITY.RRManager.UpdateWizard.Utils.Step", {
     },
     getValues: Ext.emptyFn,
     getNext: function () {
-        debugger
         if (Ext.isFunction(this.validate) && this.validate() !== true) {
             return false;
         }

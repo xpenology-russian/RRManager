@@ -24,4 +24,5 @@ module.exports = {
     experiments: {
         outputModule: true, // Enable outputting module format
     },
+    devtool: 'source-map', // Generate source map files
 };

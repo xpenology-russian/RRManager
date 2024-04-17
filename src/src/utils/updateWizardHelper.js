@@ -6,6 +6,11 @@ SYNOCOMMUNITY.RRManager.UpdateWizard.Helper = {
     V: function (category, element) {
         return _TT("SYNOCOMMUNITY.RRManager.AppInstance", category, element)
     },
+    formatString: function (str, ...args) {
+        return str.replace(/{(\d+)}/g, function (match, number) {
+            return typeof args[number] !== 'undefined' ? args[number] : match;
+        });
+    },
     maskLoading: function (a) {
         a.getEl().mask(this.T("common", "loading"), "x-mask-loading");
     },
@@ -20,8 +25,8 @@ SYNOCOMMUNITY.RRManager.UpdateWizard.Helper = {
     },
     tryUnmaskAndReload: function (a, b, c) {
         this.unmask(a);
-        b.reload();
-        c();
+        // b.reload();
+        // c();
     },
     getError: function (a) {
         return _T("error", a);
