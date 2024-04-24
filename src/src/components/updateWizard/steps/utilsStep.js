@@ -34,6 +34,7 @@ export default
             if (Ext.isFunction(this.validate) && this.validate() !== true) {
                 return false;
             }
+            //TODO: fix call submit form
             // this.formPanel.submit();
             return this.callParent(arguments);
         },
