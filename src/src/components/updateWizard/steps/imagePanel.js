@@ -15,7 +15,8 @@ export default
                 nextId: a.nextId,
             });
             var b = {
-                headline: this.helper.T("vm", "specify_image_spec"),
+                //TODO: fix localization
+                headline: "Choouse an Update File",//this.helper.T("vm", "specify_image_spec"),
                 layout: "fit",
                 items: [this.formPanel],
                 listeners: { scope: this, activate: this.onActivate },

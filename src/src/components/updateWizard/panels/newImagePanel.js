@@ -350,9 +350,9 @@ export default
                 if ("upload" === i.get_patch_by || "from_ds" === i.get_patch_by) {
                     var e = i.path.substr(i.path.lastIndexOf("."));
                     var g = d.hasOwnProperty(this.imageType) ? d[this.imageType] : [];
-                    var h = b.hasOwnProperty(this.imageType)
-                        ? b[this.imageType]
-                        : Object.values(b).reduce(function (k, j) {
+                    var h = b.hasOwnProperty(this.imageType) ?
+                        b[this.imageType] :
+                        Object.values(b).reduce(function (k, j) {
                             return k.concat(j);
                         }, []);
                     var f = false;
@@ -362,15 +362,13 @@ export default
                         }
                     });
                     if (f === false) {
-                        this.appWin
-                            .getMsgBox()
-                            .alert(
-                                this.helper.T("app", "displayname"),
-                                String.format(
-                                    this.helper.T("error", "image_filename_bad_ext"),
-                                    h.join(", ")
-                                )
-                            );
+                        this.appWin.getMsgBox().alert(
+                            this.helper.T("app", "displayname"),
+                            String.format(
+                                this.helper.T("error", "image_filename_bad_ext"),
+                                h.join(", ")
+                            )
+                        );
                         c = false;
                         return false;
                     }

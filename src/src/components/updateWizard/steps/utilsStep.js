@@ -34,8 +34,8 @@ export default
             if (Ext.isFunction(this.validate) && this.validate() !== true) {
                 return false;
             }
-            this.formPanel.submit();
-            // return this.callParent(arguments);
+            // this.formPanel.submit();
+            return this.callParent(arguments);
         },
         activate: function () {
             if (this.autoHideBanner) {

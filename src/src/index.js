@@ -27,7 +27,7 @@ import UpdateWizardHelper from './utils/updateWizardHelper';
 import UtilsWizard from './components/updateWizard/utilsWizard';
 import UpdateWizard from './components/updateWizard/wizard';
 import ImagePanel from './components/updateWizard/steps/imagePanel';
-import NewImagePanel from './components/updateWizard/newImagePanel';
+import NewImagePanel from './components/updateWizard/panels/newImagePanel';
 import StoragePanel from './components/updateWizard/steps/storagePanel';
 
 

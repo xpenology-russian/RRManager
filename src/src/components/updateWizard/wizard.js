@@ -7,6 +7,7 @@ export default
         },
         fillConfig: function (a) {
             var b = {
+                //TODO: Fix cls
                 cls: "vm-create-wizard",
                 steps: [
                     new SYNOCOMMUNITY.RRManager.UpdateWizard.ImagePanel({

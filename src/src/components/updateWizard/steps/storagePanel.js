@@ -10,7 +10,8 @@ export default
             this.store = this.createStore(a);
             this.gridPanel = this.createGridPanel(a);
             var b = {
-                headline: this.helper.T("host", "select_storage_desc_new"),
+                //TODO: fix localization
+                headline: "Please select the update file to install.",//this.helper.T("host", "select_storage_desc_new"),
                 layout: "fit",
                 items: [this.gridPanel],
                 listeners: { scope: this, activate: this.onActivate },
@@ -27,22 +28,17 @@ export default
                 colModel: new Ext.grid.ColumnModel({
                     defaults: { sortable: true, width: 120 },
                     columns: [
-                        { header: this.helper.T("common", "host"), dataIndex: "host_name" },
+                        { header: "File Name", dataIndex: "fileName" },
                         {
-                            header: this.helper.T("volume", "volume"),
-                            dataIndex: "volume_path",
-                            renderer: SYNO.SDS.Utils.StorageUtils.VolumeNameRenderer,
+                            header: "File Version",
+                            dataIndex: "fileVersion",
+                            // renderer: this.helper.diskSizeRenderer,
                         },
                         {
-                            header: this.helper.T("common", "total_space"),
-                            dataIndex: "size",
-                            renderer: this.helper.diskSizeRenderer,
-                        },
-                        {
-                            header: this.helper.T("common", "free_space"),
-                            dataIndex: "free_size",
-                            renderer: this.helper.diskSizeRenderer,
-                        },
+                            header: "File Size (Mb)",
+                            dataIndex: "fileSize",
+                            // renderer: SYNO.SDS.Utils.StorageUtils.VolumeNameRenderer,
+                        }
                     ],
                 }),
                 selModel: new Ext.grid.RowSelectionModel({ singleSelect: true }),
@@ -51,26 +47,31 @@ export default
         },
         createStore: function (a) {
             return new SYNO.API.JsonStore({
-                api: "SYNO.Virtualization.Repo",
-                method: "list_avail_volume",
-                version: 1,
-                appWindow: a.owner,
                 autoDestroy: true,
-                root: "volumes",
-                fields: [
-                    { name: "host_name" },
-                    { name: "host_id" },
-                    { name: "volume_path" },
-                    { name: "size" },
-                    { name: "free_size" },
-                ],
-                sortInfo: { field: "host_name", direction: "ASC" },
+                appWindow: this.appWin,
+                restful: true,
+                root: "result",
+                url: "/webman/3rdparty/rr-manager/getAvailableUpdates.cgi",
+                idProperty: "fileName",
+                fields: [{
+                    name: 'fileName',
+                    type: 'string'
+                }, {
+                    name: 'fileSize',
+                    type: 'number'
+                }, {
+                    name: 'fileVersion',
+                    type: 'string'
+                }, {
+                    name: 'filePath',
+                    type: 'string'
+                }],
                 listeners: {
                     scope: this,
                     exception: this.onStoreException,
                     beforeload: this.onStoreBeforeLoad,
                     load: this.onStoreLoad,
-                },
+                }
             });
         },
         getSelection: function () {
@@ -126,26 +127,24 @@ export default
             }
         },
         onActivate: function () {
-            //  this.helper.unmask(this.gridPanel);
-            // this.helper.maskLoading(this.owner);
-            // this.store.load();
+            this.helper.unmask(this.gridPanel);
+            this.helper.maskLoading(this.owner);
+            this.store.load();
             this.owner.getButton("next").enable();
         },
         validate: function () {
-            // var a = this.getSelection();
-            // if (!a) {
-            //     this.owner
-            //         .getMsgBox()
-            //         .alert("alert", this.helper.T("error", "no_storage_error"));
-            //     return false;
-            // }
+            var a = this.getSelection();
+            if (!a) {
+                this.owner
+                    .getMsgBox()
+                    //TODO: fix localization
+                    .alert("alert", "No update file selected."); //this.helper.T("error", "no_storage_error")
+                return false;
+            }
             return true;
         },
         getValues: function () {
-            return {
-                host_id: this.getSelection().get("host_id"),
-                volume_path: this.getSelection().get("volume_path"),
-            };
+            return this.data;
         },
         getNext: function () {
             if (!this.validate()) {
