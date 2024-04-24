@@ -21,13 +21,14 @@ import Debug from './tabs/debug';
 import DebugGeneralTab from './panels/debug/generalTab';
 
 //UpdateWizard
-import UtilsStep from './components/updateWizard/utilsStep';
+import UtilsStep from './components/updateWizard/steps/utilsStep';
+
 import UpdateWizardHelper from './utils/updateWizardHelper';
 import UtilsWizard from './components/updateWizard/utilsWizard';
 import UpdateWizard from './components/updateWizard/wizard';
-import ImagePanel from './components/updateWizard/imagePanel';
+import ImagePanel from './components/updateWizard/steps/imagePanel';
 import NewImagePanel from './components/updateWizard/newImagePanel';
-import StoragePanel from './components/updateWizard/storagePanel';
+import StoragePanel from './components/updateWizard/steps/storagePanel';
 
 
 
