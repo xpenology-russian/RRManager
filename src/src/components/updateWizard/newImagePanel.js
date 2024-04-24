@@ -240,13 +240,6 @@ export default
             }
             return isValid;
         },
-        onDownloadVDSM: function () {
-            // var a = new SYNOCOMMUNITY.RRManager.Image.DownloadVDSMWindow({
-            //     parent: this,
-            //     owner: this.appWin,
-            // });
-            // a.open();
-        },
         onFromPC: function (b, d, c) {
             var a = b.target.files;
             Ext.each(
@@ -630,7 +623,9 @@ export default
             }
         },
         MAX_POST_FILESIZE: Ext.isWebKit ? -1 : window.console && window.console.firebug ? 20971521 : 4294963200,
-        //1
+        showMsg: function (msg) {
+            this.owner.getMsgBox().alert("title", msg);
+        },
         doImageCreate: function (fileInfo) {
             this.uploadTaskNum = 0;
             this.nonUploadTaskNum = 0;
@@ -732,6 +727,37 @@ export default
             });
             this.helper.unmask(this.appWin);
         },
+        runUpdate: async function () {
+            const self = this;
+            //show the spinner
+            //TODO: fix the spinner
+            // self.owner.getEl().mask(_T("common", "loading"), "x-mask-loading");
+            self.apiProvider.runScheduledTask('RunRrUpdate');
+            const maxCountOfRefreshUpdateStatus = 350;
+            let countUpdatesStatusAttemp = 0;
+
+            const updateStatusInterval = setInterval(async function () {
+                const checksStatusResponse = await self.apiProvider.callCustomScript('checkUpdateStatus.cgi');
+                //TODO: why it's crashing here?
+                if (!checksStatusResponse?.success) {
+                    clearInterval(updateStatusInterval);
+                    self.helper.unmask(this.appWin);
+                    self.showMsg(checksStatusResponse?.status);
+                }
+                const response = checksStatusResponse.result;
+                self.owner.getEl()?.mask(self.helper.formatString(self.helper.V('ui', 'update_rr_progress_msg'), response?.progress ?? "--", response?.progressmsg ?? "--"), 'x-mask-loading');
+                countUpdatesStatusAttemp++;
+                if (countUpdatesStatusAttemp == maxCountOfRefreshUpdateStatus || response?.progress?.startsWith('-')) {
+                    clearInterval(updateStatusInterval);
+                    // self.owner.getEl()?.unmask();
+                    self.showMsg(self.helper.formatString(self.helper.V('ui'), response?.progress, response?.progressmsg));
+                } else if (response?.progress == '100') {
+                    // self.owner.getEl()?.unmask();
+                    clearInterval(updateStatusInterval);
+                    self.showMsg(self.helper.V('ui', 'update_rr_completed'));
+                }
+            }, 1500);
+        },
         onRunRrUpdateManuallyClick: function () {
             const self = this;
             const rrConfigJson = localStorage.getItem('rrConfig');
@@ -742,7 +768,7 @@ export default
             this.apiProvider.getUpdateFileInfo(url).then((responseText) => {
                 if (!responseText.success) {
                     self.owner.getEl()?.unmask();
-                    this.owner.getMsgBox().alert("Error", self.formatString(self.helper.V('ui', 'unable_update_rr_msg'), responseText?.error ?? "No response from the readUpdateFile.cgi script."));
+                    this.owner.getMsgBox().alert("Error", self.helper.formatString(self.helper.V('ui', 'unable_update_rr_msg'), responseText?.error ?? "No response from the readUpdateFile.cgi script."));
                     // this.showMsg();
                     return;
                 }
@@ -751,40 +777,12 @@ export default
                 const currentRrVersion = rrConfig.rr_version;
                 const updateRrVersion = self.owner[configName].updateVersion;
 
-                async function runUpdate() {
-                    //show the spinner
-                    self.owner.getEl().mask(_T("common", "loading"), "x-mask-loading");
-                    self.apiProvider.runScheduledTask('RunRrUpdate');
-                    const maxCountOfRefreshUpdateStatus = 350;
-                    let countUpdatesStatusAttemp = 0;
-
-                    const updateStatusInterval = setInterval(async function () {
-                        const checksStatusResponse = await self.apiProvider.callCustomScript('checkUpdateStatus.cgi');
-                        if (!checksStatusResponse?.success) {
-                            clearInterval(updateStatusInterval);
-                            self.owner.getEl()?.unmask();
-                            self.showMsg(checksStatusResponse?.status);
-                        }
-                        const response = checksStatusResponse.result;
-                        self.owner.getEl()?.mask(self.formatString(self.helper.V('ui', 'update_rr_progress_msg'), response?.progress ?? "--", response?.progressmsg ?? "--"), 'x-mask-loading');
-                        countUpdatesStatusAttemp++;
-                        if (countUpdatesStatusAttemp == maxCountOfRefreshUpdateStatus || response?.progress?.startsWith('-')) {
-                            clearInterval(updateStatusInterval);
-                            self.owner.getEl()?.unmask();
-                            self.showMsg(self.formatString(self.helper.V('ui'), response?.progress, response?.progressmsg));
-                        } else if (response?.progress == '100') {
-                            self.owner.getEl()?.unmask();
-                            clearInterval(updateStatusInterval);
-                            self.showMsg(self.helper.V('ui', 'update_rr_completed'));
-                        }
-                    }, 1500);
-                }
                 self.appWin.getMsgBox().confirmDelete(
                     "Confirmation",
-                    self.formatString(self.helper.V('ui', 'update_rr_confirmation'), currentRrVersion, updateRrVersion),
+                    self.helper.formatString(self.helper.V('ui', 'update_rr_confirmation'), currentRrVersion, updateRrVersion),
                     (userResponse) => {
                         if ("yes" === userResponse) {
-                            runUpdate();
+                            self.runUpdate();
                         }
                     },
                     e,

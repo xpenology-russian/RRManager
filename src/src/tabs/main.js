@@ -110,13 +110,13 @@ export default
                     self.appWin.getMsgBox().confirm(
                         "Confirmation",
                         self.formatString(
-                            self.formatString(self.helper.V('ui', 'required_tasks_is_missing'), tasksNames),
+                            self.helper.formatString(self.helper.V('ui', 'required_tasks_is_missing'), tasksNames),
                             self.helper.V('ui', 'required_components_missing')),
                         (userResponse) => {
                             if ("yes" === userResponse) {
                                 craeteTasks();
                             } else {
-                                Ext.getCmp(self.id).getEl().mask(self.formatString(self.helper.V('ui', 'required_components_missing_spinner_msg'), tasksNames), "x-mask-loading");
+                                Ext.getCmp(self.id).getEl().mask(self.helper.formatString(self.helper.V('ui', 'required_components_missing_spinner_msg'), tasksNames), "x-mask-loading");
                             }
                         }, self,
                         {
@@ -212,58 +212,16 @@ export default
                 );
             });
         },
-
-
         showPrompt: function (title, message, text, yesCallback) {
-            var window = new SYNO.SDS.ModalWindow({
-                closeAction: "hide",
-                cls: "x-window-dlg",
-                layout: 'anchor',
-                width: 750,
-                height: 600,
-                resizable: false,
-                modal: true,
+            //TODO: fix the text to rendet changelog
+            var window = new SYNOCOMMUNITY.RRManager.Overview.AlertWindow({
+                owner: this.appWin,
                 title: title,
-                buttons: [{
-                    text: this.helper.T("common", "alt_cancel"),
-                    // Handle Cancel
-                    handler: function () {
-                        window.close();
-                    }
-                }, {
-                    text: this.helper.V("ui", "alt_confirm"),
-                    itemId: "confirm",
-                    btnStyle: "blue",
-                    // Handle Confirm
-                    handler: function () {
-                        if (yesCallback) yesCallback();
-                        window.close();
-                    }
-                }],
-                items: [
-                    {
-                        // Display the prompt message
-                        xtype: 'box',
-                        autoEl: { tag: 'div', html: message },
-                        style: 'margin: 10px;',
-                        anchor: '100%'
-                    },
-                    {
-                        // Display changelog title
-                        xtype: 'syno_displayfield',
-                        anchor: '100%',
-                        style: 'margin: 10px; font-weight: bold;',
-                        value: 'Changelog:'
-                    },
-                    {
-                        // Display the changelog in a scrollable view
-                        xtype: 'box',
-                        autoEl: { tag: 'div', html: text.replace(/\n/g, '<br>') },
-                        style: 'margin: 10px; overflow-y: auto; border: 1px solid #ccc; padding: 5px;',
-                        height: '75%', // Fixed height for the scrollable area
-                        anchor: '100%'
-                    }
-                ]
+                message: message,
+                msg: text,
+                msgItemCount: 3,
+                confirmCheck: true,
+                btnOKHandler: yesCallback
             });
             window.open();
         },
@@ -273,12 +231,16 @@ export default
             self.appWin.setStatusBusy(null, null, 50);
             self.apiProvider.runScheduledTask('MountLoaderDisk');
             (async () => {
-                self.systemInfo = await self.apiProvider.getSytemInfo();
-                self.packages = await self.apiProvider.getPackagesList();
-                self.rrCheckVersion = await self.apiProvider.checkRRVersion();
-                if (self.systemInfo && self.packages) {
-                    self.systemInfoTxt = `Model: ${self.systemInfo?.model}, RAM: ${self.systemInfo?.ram} MB, DSM version: ${self.systemInfo?.version_string} `;
-                    const rrManagerPackage = self.packages.packages.find((packageInfo) => packageInfo.id == 'rr-manager');
+                const [systemInfo, packages, rrCheckVersion] = await Promise.all([
+                    self.apiProvider.getSytemInfo(),
+                    self.apiProvider.getPackagesList(),
+                    self.apiProvider.checkRRVersion()
+                ]);
+
+                if (systemInfo && packages) {
+                    self.rrCheckVersion = rrCheckVersion;
+                    self.systemInfoTxt = `Model: ${systemInfo?.model}, RAM: ${systemInfo?.ram} MB, DSM version: ${systemInfo?.version_string} `;
+                    const rrManagerPackage = packages.packages.find((packageInfo) => packageInfo.id == 'rr-manager');
                     self.rrManagerVersionText = `🛡️RR Manager v.: ${rrManagerPackage?.version}`;
                     self.panels.healthPanel.fireEvent(
                         "select",
@@ -296,39 +258,43 @@ export default
                         });
                         self.installed = true;
                     }
-
                     self.panels.healthPanel.fireEvent("data_ready");
                     self.loaded = true;
                 }
-                function donwloadUpdate() {
-                    SYNO.API.currentManager.requestAPI('SYNO.DownloadStation2.Task', "create", "2", {
-                        type: "url",
-                        destination: `${self.rrManagerConfig.SHARE_NAME}/${self.rrManagerConfig.RR_TMP_DIR}`,
-                        create_list: true,
-                        url: [self.rrCheckVersion.updateAllUrl]
-                    });
-                }
-                if (self?.rrCheckVersion?.status == "update available"
-                    && self?.rrCheckVersion?.tag != "null"
-                    && self.rrConfig.rr_version !== self?.rrCheckVersion?.tag) {
+
+                if (self.isUpdateAvailable(rrCheckVersion)) {
                     self.showPrompt(self.helper.V('ui', 'prompt_update_available_title'),
-                        self.formatString(self.helper.V('ui', 'prompt_update_available_message'), self.rrCheckVersion.tag), self.rrCheckVersion.notes, donwloadUpdate);
+                        self.helper.formatString(self.helper.V('ui', 'prompt_update_available_message'), rrCheckVersion.tag),
+                        rrCheckVersion.notes, self.donwloadUpdate.bind(self));
                 }
             })();
             self.__checkDownloadFolder(self.__checkRequiredTasks.bind(self));
+        },
+        isUpdateAvailable: function (rrCheckVersion) {
+            return rrCheckVersion?.status == "update available"
+                && rrCheckVersion?.tag != "null"
+                && this.rrConfig.rr_version !== rrCheckVersion?.tag;
         },
 
         showMsg: function (msg) {
             this.owner.getMsgBox().alert("title", msg);
         },
-
+        donwloadUpdate: function () {
+            self = this;
+            SYNO.API.currentManager.requestAPI('SYNO.DownloadStation2.Task', "create", "2", {
+                type: "url",
+                destination: `${self.rrManagerConfig.SHARE_NAME}/${self.rrManagerConfig.RR_TMP_DIR}`,
+                create_list: true,
+                url: [self.rrCheckVersion.updateAllUrl]
+            });
+        },
         updateAllForm: async function () {
-            that = this.appWin;
             this.owner.setStatusBusy();
             try {
                 const rrConfig = await this.getConf();
                 var configName = 'rrConfig';
-                that[configName] = rrConfig;
+
+                this.appWin[configName] = rrConfig;
                 this[configName] = rrConfig;
 
                 localStorage.setItem(configName, JSON.stringify(rrConfig));
@@ -338,7 +304,6 @@ export default
                 this.owner.clearStatusBusy();
             }
         },
-        _prefix: '/webman/3rdparty/rr-manager/',
 
         getConf: function () {
             return this.apiProvider.callCustomScript('getConfig.cgi')
@@ -357,8 +322,108 @@ export default
         },
         getActivateOverviewPanel: function () {
             if (this.getActiveTab()) {
-              return this.getActiveTab().overviewPanel;
+                return this.getActiveTab().overviewPanel;
             }
             return null;
-          },
+        },
     });
+// Ext.define("SYNOCOMMUNITY.RRManager.Overview.Main", {
+//     extend: "SYNO.ux.Panel",
+//     helper: SYNOCOMMUNITY.RRManager.UpdateWizard.Helper,
+
+Ext.define("SYNOCOMMUNITY.RRManager.Overview.AlertWindow", {
+    extend: "SYNO.SDS.ModalWindow",
+    helper: SYNOCOMMUNITY.RRManager.UpdateWizard.Helper,
+    constructor: function (a) {
+        this.callParent([this.fillConfig(a)]);
+    },
+    fillConfig: function (a) {
+        this.panel = this.createPanel(a);
+        this.btnBar = this.createBtnBar(a);
+        var c = (a.initHeight || 250) + 200 * (a.msgItemCount || 0);
+        var b = {
+            cls: "vmm-modal-window",
+            width: a.width || 650,
+            height: Math.min(c, 650),
+            border: false,
+            resizable: false,
+            layout: "fit",
+            items: this.panel,
+            fbar: this.btnBar,
+        };
+        Ext.apply(b, a);
+        return b;
+    },
+    createBtnBar: function (a) {
+        if (a.confirmCheck) {
+            return {
+                xtype: "toolbar",
+                buttonAlign: "right",
+                cls: "normal-toolbar",
+                items: [
+                    {
+                        xtype: "syno_button",
+                        btnStyle: "grey",
+                        text: this.helper.T("common", "cancel"),
+                        scope: this,
+                        handler: this.close,
+                    },
+                    {
+                        xtype: "syno_button",
+                        btnStyle: "red",
+                        text: this.helper.T("common", "ok"),
+                        scope: this,
+                        width: 134,
+                        handler: this.onOKClick,
+                    },
+                ],
+            };
+        } else {
+            return {
+                xtype: "toolbar",
+                buttonAlign: "center",
+                cls: "center-toolbar",
+                items: [
+                    {
+                        xtype: "syno_button",
+                        btnStyle: "blue",
+                        text: this.helper.T("common", "ok"),
+                        scope: this,
+                        width: 134,
+                        handler: this.onOKClick,
+                    },
+                ],
+            };
+        }
+    },
+    createPanel: function (a) {
+        return new SYNO.ux.Panel({
+            width: a.width ? a.width : 650,
+            items: [
+                {
+                    xtype: "label",
+                    autoHeight: true,
+                    id: (this.msgId = Ext.id()),
+                    indent: 1,
+                    style: "line-height: 25px;",
+                    html: a.message,
+                },
+                {
+                    // Display the changelog in a scrollable view
+                    xtype: 'box',
+                    autoEl: { tag: 'div', html: a.msg.replace(/\n/g, '<br>') },
+                    style: 'margin: 10px; overflow-y: auto; border: 1px solid #ccc; padding: 5px;',
+                    height: '75%', // Fixed height for the scrollable area
+                    anchor: '100%'
+                }
+
+            ],
+        });
+    },
+    onOKClick: function () {
+        if (this.btnOKHandler) {
+            this.btnOKHandler();
+        }
+        this.close();
+    },
+});

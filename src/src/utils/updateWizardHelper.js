@@ -15,10 +15,10 @@ SYNOCOMMUNITY.RRManager.UpdateWizard.Helper = {
         a.getEl().mask(this.T("common", "loading"), "x-mask-loading");
     },
     unmask: function (a) {
-        a.getEl().unmask();
+        a?.getEl()?.unmask();
     },
     mask: function (b, a) {
-        b.getEl().mask(a, "x-mask-loading");
+        b?.getEl()?.mask(a, "x-mask-loading");
     },
     diskSizeRenderer: function (a) {
         return Ext.util.Format.fileSize(a);
