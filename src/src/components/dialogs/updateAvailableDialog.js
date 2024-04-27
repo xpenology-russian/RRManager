@@ -1,6 +1,6 @@
 
 export default
-    Ext.define("SYNOCOMMUNITY.RRManager.Overview.AlertWindow", {
+    Ext.define("SYNOCOMMUNITY.RRManager.Overview.UpdateAvailableDialog", {
         extend: "SYNO.SDS.ModalWindow",
         helper: SYNOCOMMUNITY.RRManager.UpdateWizard.Helper,
         constructor: function (a) {
@@ -84,8 +84,15 @@ export default
                         style: 'margin: 10px; overflow-y: auto; border: 1px solid #ccc; padding: 5px;',
                         height: '75%', // Fixed height for the scrollable area
                         anchor: '100%'
-                    }
-
+                    },{
+                        xtype: "syno_checkbox",
+                        id: "confirmCheck",
+                        boxLabel: this.helper.V("update_available_dialog", "checkbox_dont_show_again"),
+                        checked: false,
+                        hidden: !a.confirmCheck,
+                        indent: 1,
+                        style: "line-height: 25px;"
+                    }      
                 ],
             });
         },

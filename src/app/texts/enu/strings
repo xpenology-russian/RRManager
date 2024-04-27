@@ -48,7 +48,7 @@ col_description="Description"
 
 
 prompt_update_available_title="Update Available"
-prompt_update_available_message="The new version {0} of RR is available. Do you want to download it?"
+prompt_update_available_message="The new version {0} of RR is available. Do you want to download it via Download Manager?"
 
 addons_all="All"
 addons_system="System"
@@ -78,6 +78,9 @@ btn_proceed = "Proceed"
 [health_panel]
 btn_from_pc = "From PC"
 btn_from_ds = "From DiskStation"
+
+[update_available_dialog]
+checkbox_dont_show_again = "Don't show again"
 
 [widget]
 danger_status="Danger!"

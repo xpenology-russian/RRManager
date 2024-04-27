@@ -69,9 +69,8 @@ export default
             }
         },
         showMsg: function (msg) {
-            this.owner
-                .getMsgBox()
-                .alert("", msg);
+            let parent = this.owner ?? this.parent?.appWin;
+            parent.getMsgBox().alert("", msg);
         },
         createUploadPannel: function () {
             this.uploadForm = new Ext.form.FormPanel({
@@ -305,10 +304,10 @@ export default
                     progress: (progressEvent) => {
                         const percentage = ((progressEvent.loaded / progressEvent.total) * 100).toFixed(2);
                         let loader = document.getElementsByClassName("x-loading-message-inner");
-                        if(loader?.length > 0){
+                        if (loader?.length > 0) {
                             loader = loader[0];
-                            loader.textContent=`${self.helper.T("common", "loading")}. ${self.helper.V("upload_file_dialog", "completed")} ${percentage}%.`;
-                        }                        
+                            loader.textContent = `${self.helper.T("common", "loading")}. ${self.helper.V("upload_file_dialog", "completed")} ${percentage}%.`;
+                        }
                     },
                 });
             }

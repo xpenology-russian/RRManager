@@ -15,6 +15,7 @@ import Settings from './tabs/setting';
 import SettingsGeneralTab from './panels/settings/generalTab';
 import RRConfigTab from './panels/settings/rrConfigTab';
 import SynoInfoTab from './panels/settings/synoInfoTab';
+import RrManagerConfigTab from './panels/settings/rrManagerConfigTab';
 
 //tab debug
 import Debug from './tabs/debug';

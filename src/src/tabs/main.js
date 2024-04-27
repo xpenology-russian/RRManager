@@ -1,5 +1,5 @@
 import SynoApiProvider from '../utils/synoApiProvider';
-import AlertDialog from '../components/dialogs/updateAvaliableWithChangelogDialog';
+import UpdateAvailable from '../components/dialogs/updateAvailableDialog';
 import PasswordConfirmDialog from '../components/dialogs/passwordConfirmDialog';
 import UploadFileDialog from '../components/dialogs/uploadFileDialog';
 export default
@@ -137,13 +137,9 @@ export default
         showPasswordConfirmDialog: function (taskName) {
             return new Promise((resolve, reject) => {
                 var window = new SYNOCOMMUNITY.RRManager.Overview.PasswordConfirmDialog({
-                    owner: this.appWin,
-                    id: "confirm_password_dialog",
+                    owner: this.appWin,                   
                     title: `${_T("common", "enter_password_to_continue")} for task: ${taskName}.`,
-                    width: 500,
-                    height: 200,
-                    resizable: false,
-                    layout: "fit",
+                    confirmPasswordHandler: resolve
                 });
                 window.open();
             });
@@ -151,8 +147,8 @@ export default
         createAndRunSchedulerTask: function (data) {
             this.apiProvider.getPasswordConfirm(data).then(data => {
                 //TODO: remove hardcoded update.zip file name
-                this.createTask("RunRrUpdate",
-                    ".%20%2Fvar%2Fpackages%2Frr-manager%2Ftarget%2Fapp%2Fconfig.txt%20%26%26%20%2Fusr%2Fbin%2Frr-update.sh%20updateRR%20%22%24UPLOAD_DIR_PATH%24RR_TMP_DIR%22%2Fupdate.zip%20%2Ftmp%2Frr_update_progress",
+                this.apiProvider.createTask("RunRrUpdate",
+                '.%20%2Fvar%2Fpackages%2Frr-manager%2Ftarget%2Fapp%2Fconfig.txt%20%26%26%20.%20%2Ftmp%2Frr_update_filename%20%26%26%20%2Fusr%2Fbin%2Frr-update.sh%20updateRR%20%22%24UPLOAD_DIR_PATH%24RR_TMP_DIR%22%2Fupdate.zip%20%2Ftmp%2Frr_update_progress',
                     data
                 );
             });
@@ -160,7 +156,7 @@ export default
         createAndRunSchedulerTaskSetRootPrivilegesForRrManager: function (data) {
             self = this;
             this.apiProvider.getPasswordConfirm(data).then(data => {
-                this.createTask("SetRootPrivsToRrManager",
+                this.apiProvider.createTask("SetRootPrivsToRrManager",
                     "sed%20-i%20's%2Fpackage%2Froot%2Fg'%20%2Fvar%2Fpackages%2Frr-manager%2Fconf%2Fprivilege%20%26%26%20synopkg%20restart%20rr-manager",
                     data
                 ).then(x => {
@@ -177,7 +173,7 @@ export default
             });
         },
         showPrompt: function (title, message, text, yesCallback) {
-            var window = new SYNOCOMMUNITY.RRManager.Overview.AlertWindow({
+            var window = new SYNOCOMMUNITY.RRManager.Overview.UpdateAvailableDialog({
                 owner: this.appWin,
                 title: title,
                 message: message,
@@ -198,7 +194,7 @@ export default
                     self.apiProvider.getSytemInfo(),
                     self.apiProvider.getPackagesList(),
                     //TODO: uncomment when RR version will be available
-                    // self.apiProvider.checkRRVersion()
+                    self.apiProvider.checkRRVersion()
                 ]);
 
                 if (systemInfo && packages) {

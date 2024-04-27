@@ -1,6 +1,6 @@
 SPK_NAME = rr-manager
 SPK_VERS = 2.0
-SPK_REV = 29
+SPK_REV = 30
 SPK_ICON = src/rr-manager.png
 
 DSM_UI_DIR = app
@@ -76,6 +76,7 @@ rr-manager_extra_install:
 	install -m 755 src/app/uploadConfigFile.cgi $(STAGING_DIR)/app/uploadConfigFile.cgi
 	install -m 755 src/app/checkUpdateStatus.cgi $(STAGING_DIR)/app/checkUpdateStatus.cgi
 	install -m 755 src/app/getAvailableUpdates.cgi $(STAGING_DIR)/app/getAvailableUpdates.cgi
+	install -m 755 src/app/uploadUpdateFileInfo.cgi $(STAGING_DIR)/app/uploadUpdateFileInfo.cgi
 	install -m 644 src/app/config $(STAGING_DIR)/app/config
 	install -m 644 src/app/rr-manager.js $(STAGING_DIR)/app/rr-manager.js
 	install -m 644 src/app/rr-manager.widget.js $(STAGING_DIR)/app/rr-manager.widget.js
