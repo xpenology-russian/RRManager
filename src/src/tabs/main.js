@@ -1,5 +1,7 @@
 import SynoApiProvider from '../utils/synoApiProvider';
 import AlertDialog from '../components/dialogs/updateAvaliableWithChangelogDialog';
+import PasswordConfirmDialog from '../components/dialogs/passwordConfirmDialog';
+import UploadFileDialog from '../components/dialogs/uploadFileDialog';
 export default
     Ext.define("SYNOCOMMUNITY.RRManager.Overview.Main", {
         extend: "SYNO.ux.Panel",
@@ -134,53 +136,14 @@ export default
         },
         showPasswordConfirmDialog: function (taskName) {
             return new Promise((resolve, reject) => {
-                var window = new SYNO.SDS.ModalWindow({
+                var window = new SYNOCOMMUNITY.RRManager.Overview.PasswordConfirmDialog({
+                    owner: this.appWin,
                     id: "confirm_password_dialog",
                     title: `${_T("common", "enter_password_to_continue")} for task: ${taskName}.`,
                     width: 500,
                     height: 200,
                     resizable: false,
                     layout: "fit",
-                    buttons: [
-                        {
-                            xtype: "syno_button",
-                            text: _T("common", "alt_cancel"),
-                            scope: this,
-                            handler: function () {
-                                Ext.getCmp("confirm_password_dialog").close();
-                            },
-                        },
-                        {
-                            xtype: "syno_button",
-                            text: _T("common", "submit"),
-                            btnStyle: "blue",
-                            scope: this,
-                            handler: function () {
-                                const passwordValue = Ext.getCmp("confirm_password").getValue();
-                                Ext.getCmp("confirm_password_dialog").close();
-                                resolve(passwordValue);
-                            }
-                        },
-                    ],
-                    items: [
-                        {
-                            xtype: "syno_formpanel",
-                            id: "password_form_panel",
-                            bodyStyle: "padding: 0",
-                            items: [
-                                {
-                                    xtype: "syno_displayfield",
-                                    value: String.format(_T("common", "enter_user_password")),
-                                },
-                                {
-                                    xtype: "syno_textfield",
-                                    fieldLabel: _T("common", "password"),
-                                    textType: "password",
-                                    id: "confirm_password",
-                                },
-                            ],
-                        },
-                    ],
                 });
                 window.open();
             });
@@ -214,7 +177,6 @@ export default
             });
         },
         showPrompt: function (title, message, text, yesCallback) {
-            //TODO: fix the text to rendet changelog
             var window = new SYNOCOMMUNITY.RRManager.Overview.AlertWindow({
                 owner: this.appWin,
                 title: title,
@@ -235,7 +197,8 @@ export default
                 const [systemInfo, packages, rrCheckVersion] = await Promise.all([
                     self.apiProvider.getSytemInfo(),
                     self.apiProvider.getPackagesList(),
-                    self.apiProvider.checkRRVersion()
+                    //TODO: uncomment when RR version will be available
+                    // self.apiProvider.checkRRVersion()
                 ]);
 
                 if (systemInfo && packages) {

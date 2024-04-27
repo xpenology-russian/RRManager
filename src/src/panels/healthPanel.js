@@ -2,11 +2,11 @@ import synoApiProvider from "../utils/synoApiProvider";
 export default
     Ext.define("SYNOCOMMUNITY.RRManager.Overview.HealthPanel", {
         extend: "SYNO.ux.Panel",
-        helper: SYNOCOMMUNITY.RRManager.UpdateWizard.Helper,
         apiProvider: SYNOCOMMUNITY.RRManager.SynoApiProvider,
         constructor: function (e) {
             this.appWin = e.appWin;
             this.owner = e.owner;
+            this.helper = e.owner.helper;
             this.apiProvider.init(this);
             this.callParent([this.fillConfig(e)]);
         },
@@ -20,35 +20,16 @@ export default
             this.getComponent("rrActionsPanel")?.setVisible(true);
             this.owner.fireEvent("data_ready");
         },
-        createUploadPannel: function () {
-            var myFormPanel = new Ext.form.FormPanel({
-                title: this.helper.V("ui", "lb_select_update_file"),
-                fileUpload: true,
-                name: 'upload_form',
-                border: !1,
-                bodyPadding: 10,
-                items: [{
-                    xtype: 'syno_filebutton',
-                    text: this.helper.V('ui', 'select_file'),
-                    name: 'filename',
-                    allowBlank: false,
-                }],
-            });
-            this["upload_form"] = myFormPanel;
-            return myFormPanel;
-        },
         showMsg: function (msg) {
             //TODO: use native alerts
             alert(msg);
         },
-
         createActionsSection: function () {
             return new SYNO.ux.FieldSet({
                 title: this.helper.V('ui', 'section_rr_actions'),
                 items: [
                     {
                         xtype: 'syno_panel',
-                        // cls: 'panel-with-border',
                         activeTab: 0,
                         plain: true,
                         items: [
@@ -63,8 +44,14 @@ export default
                                 {
                                     xtype: 'syno_button',
                                     btnStyle: 'green',
-                                    text: "New Upload Update",
-                                    handler: this.showUpdateUploadWizard.bind(this)
+                                    text: this.helper.V('health_panel', 'btn_from_pc'),
+                                    handler: this.onFromPC.bind(this)
+                                },
+                                {
+                                    xtype: 'syno_button',
+                                    btnStyle: 'blue',
+                                    text: this.helper.V('health_panel', 'btn_from_ds'),
+                                    handler: this.onFromDS.bind(this)
                                 }]
                             },
                         ],
@@ -73,22 +60,84 @@ export default
                 ]
             });
         },
-        tabType: "zip",
-        showUpdateUploadWizard: function () {
-            var a = new SYNOCOMMUNITY.RRManager.UpdateWizard.Wizard({
-                owner: this.appWin,
-                //TODO: use localized text
-                title: "Add Update*.zip file",
-                imageType: this.tabType,
-                pollingWindow: this.owner,
-                records: {
-                    data: {
-                        items: []
-                    }
-                } //this.overviewPanel.store,
-            });
-            a.open();
+        addStore: function (a) {
+            debugger;
+            //TODO: impement upload file or pass existing file
         },
+        preCheck: function (a) {
+            var b = a.path.substring(a.path.lastIndexOf("."));
+            if (-1 === this.getFileExtsByImageType().indexOf(b)) {
+                return false;
+            }
+            return true;
+        },
+        exts: {
+            zip: [".zip"],
+        },
+        imageType: "zip",
+        getFileExtsByImageType: function () {
+            return this.exts[this.imageType];
+        },
+        onFromPC: function () {
+            var window = new SYNOCOMMUNITY.RRManager.Overview.UploadFileDialog({
+                parent: this,
+                owner: this.appWin,
+                helper: this.helper,
+                id: "upload_file_dialog",
+                title: this.helper.V("ui", "upload_file_dialog_title"),
+                apiProvider: this.apiProvider,
+            });
+            window.open();
+        },
+        onFromDS: function () {
+            if (!Ext.isDefined(this.dialog)) {
+                var a = this.getFileExtsByImageType().toString().replace(/\./g, "");
+                this.dialog = new SYNO.SDS.Utils.FileChooser.Chooser({
+                    parent: this,
+                    owner: this.appWin,
+                    closeOwnerWhenNoShare: true,
+                    closeOwnerNumber: 0,
+                    enumRecycle: true,
+                    superuser: true,
+                    usage: { type: "open", multiple: true },
+                    title: this.helper.T("upload_file_dialog", "choose_file_title"),
+                    folderToolbar: true,
+                    getFilterPattern: function () {
+                        return a;
+                    },
+                    treeFilter: this.helper.VMMDSChooserTreeFilter,
+                    listeners: {
+                        scope: this,
+                        choose: function (d, b, c) {
+                            b.records.forEach(function (f) {
+                                var e = {
+                                    name: f
+                                        .get("path")
+                                        .substring(
+                                            f.get("path").lastIndexOf("/") + 1,
+                                            f.get("path").lastIndexOf(".")
+                                        ),
+                                    path: f.get("path"),
+                                    real_path: _S("hostname") + f.get("path"),
+                                    get_patch_by: "from_ds",
+                                    file_size: f.get("filesize"),
+                                };
+                                if (!this.preCheck(e)) {
+                                    return true;
+                                }
+                                this.addStore(e);
+                            }, this);
+                            this.dialog.close();
+                        },
+                        close: function () {
+                            delete this.dialog;
+                        },
+                    },
+                });
+            }
+            this.dialog.show();
+        },
+        tabType: "zip",
         fillConfig: function (e) {
             this.poolLinkId = Ext.id();
             this.iconTemplate = this.createIconTpl();
@@ -131,7 +180,6 @@ export default
                 listeners: { scope: this, data_ready: this.onDataReady },
             };
             return Ext.apply(panelConfig, e), panelConfig;
-
         },
         createIconTpl: function () {
             return new Ext.XTemplate('<div class="health-icon {status}"></div>', {
