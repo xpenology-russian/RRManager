@@ -71,6 +71,7 @@ export default
             return this.exts[this.imageType];
         },
         onFromPC: function () {
+            this.uploadFileDialog = this.createUplaodFileDialog();
             this.uploadFileDialog.open();
         },
         onFromDS: function () {
@@ -128,7 +129,6 @@ export default
             this.titleTemplate = this.createTitleTpl();
             this.upperPanel = this.createUpperPanel();
             this.lowerPanel = this.createLowerPanel();
-            this.uploadFileDialog = this.createUplaodFileDialog();
 
             this.descriptionMapping = {
                 normal: this.helper.V('ui', 'greetings_text'),
@@ -221,7 +221,7 @@ export default
             });
         },
         createUplaodFileDialog: function () {
-            return new SYNOCOMMUNITY.RRManager.Overview.UploadFileDialog({
+            this.uploadFileDialog = new SYNOCOMMUNITY.RRManager.Overview.UploadFileDialog({
                 parent: this,
                 owner: this.appWin,
                 helper: this.helper,
@@ -229,6 +229,7 @@ export default
                 title: this.helper.V("ui", "upload_file_dialog_title"),
                 apiProvider: this.apiProvider
             });
+            return this.uploadFileDialog;
         },
         createLowerPanel: function () {
             return new SYNO.ux.Panel({
