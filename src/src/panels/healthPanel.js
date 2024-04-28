@@ -20,10 +20,6 @@ export default
             this.getComponent("rrActionsPanel")?.setVisible(true);
             this.owner.fireEvent("data_ready");
         },
-        showMsg: function (msg) {
-            //TODO: use native alerts
-            alert(msg);
-        },
         createActionsSection: function () {
             return new SYNO.ux.FieldSet({
                 title: this.helper.V('ui', 'section_rr_actions'),
@@ -74,7 +70,7 @@ export default
         getFileExtsByImageType: function () {
             return this.exts[this.imageType];
         },
-        onFromPC: function () {          
+        onFromPC: function () {
             this.uploadFileDialog.open();
         },
         onFromDS: function () {
@@ -114,7 +110,6 @@ export default
                                 if (!this.preCheck(e)) {
                                     return true;
                                 }
-                                debugger;
                                 self.uploadFileDialog.updateFileInfoHandler(e);
                             }, this);
                             this.dialog.close();
@@ -127,21 +122,13 @@ export default
             }
             this.dialog.show();
         },
-        tabType: "zip",
         fillConfig: function (e) {
             this.poolLinkId = Ext.id();
             this.iconTemplate = this.createIconTpl();
             this.titleTemplate = this.createTitleTpl();
             this.upperPanel = this.createUpperPanel();
             this.lowerPanel = this.createLowerPanel();
-            this.uploadFileDialog = new SYNOCOMMUNITY.RRManager.Overview.UploadFileDialog({
-                parent: this,
-                owner: this.appWin,
-                helper: this.helper,
-                id: "upload_file_dialog",
-                title: this.helper.V("ui", "upload_file_dialog_title"),
-                apiProvider: this.apiProvider
-            });
+            this.uploadFileDialog = this.createUplaodFileDialog();
 
             this.descriptionMapping = {
                 normal: this.helper.V('ui', 'greetings_text'),
@@ -231,6 +218,16 @@ export default
                         text: " ",
                     },
                 ],
+            });
+        },
+        createUplaodFileDialog: function () {
+            return new SYNOCOMMUNITY.RRManager.Overview.UploadFileDialog({
+                parent: this,
+                owner: this.appWin,
+                helper: this.helper,
+                id: "upload_file_dialog",
+                title: this.helper.V("ui", "upload_file_dialog_title"),
+                apiProvider: this.apiProvider
             });
         },
         createLowerPanel: function () {
