@@ -63,12 +63,12 @@ export default
         },
         __checkDownloadFolder: function (callback) {
             var self = this;
-
             const rrConfig = this._getRrConfig();
             const config = rrConfig.rr_manager_config;
             self.apiProvider.getSharesList().then(x => {
                 var shareName = `/${config['SHARE_NAME']}`;
                 var sharesList = x.shares;
+                localStorage.setItem('sharesList', JSON.stringify(sharesList));
                 var downloadsShareMetadata = sharesList.find(x => x.path.toLowerCase() == shareName.toLowerCase());
                 if (!downloadsShareMetadata) {
                     var msg = this.formatString(this.helper.V('ui', 'share_notfound_msg'), config['SHARE_NAME']);
@@ -137,7 +137,7 @@ export default
         showPasswordConfirmDialog: function (taskName) {
             return new Promise((resolve, reject) => {
                 var window = new SYNOCOMMUNITY.RRManager.Overview.PasswordConfirmDialog({
-                    owner: this.appWin,                   
+                    owner: this.appWin,
                     title: `${_T("common", "enter_password_to_continue")} for task: ${taskName}.`,
                     confirmPasswordHandler: resolve
                 });
@@ -148,7 +148,7 @@ export default
             this.apiProvider.getPasswordConfirm(data).then(data => {
                 //TODO: remove hardcoded update.zip file name
                 this.apiProvider.createTask("RunRrUpdate",
-                '.%20%2Fvar%2Fpackages%2Frr-manager%2Ftarget%2Fapp%2Fconfig.txt%20%26%26%20.%20%2Ftmp%2Frr_update_filename%20%26%26%20%2Fusr%2Fbin%2Frr-update.sh%20updateRR%20%22%24UPLOAD_DIR_PATH%24RR_TMP_DIR%22%2Fupdate.zip%20%2Ftmp%2Frr_update_progress',
+                    '.%20%2Fvar%2Fpackages%2Frr-manager%2Ftarget%2Fapp%2Fconfig.txt%20%26%26%20.%20%2Ftmp%2Frr_update_filename%20%26%26%20%2Fusr%2Fbin%2Frr-update.sh%20updateRR%20%22%24UPLOAD_DIR_PATH%24RR_TMP_DIR%22%2Fupdate.zip%20%2Ftmp%2Frr_update_progress',
                     data
                 );
             });

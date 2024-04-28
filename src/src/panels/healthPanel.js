@@ -60,10 +60,6 @@ export default
                 ]
             });
         },
-        addStore: function (a) {
-            debugger;
-            //TODO: impement upload file or pass existing file
-        },
         preCheck: function (a) {
             var b = a.path.substring(a.path.lastIndexOf("."));
             if (-1 === this.getFileExtsByImageType().indexOf(b)) {
@@ -78,18 +74,11 @@ export default
         getFileExtsByImageType: function () {
             return this.exts[this.imageType];
         },
-        onFromPC: function () {
-            var window = new SYNOCOMMUNITY.RRManager.Overview.UploadFileDialog({
-                parent: this,
-                owner: this.appWin,
-                helper: this.helper,
-                id: "upload_file_dialog",
-                title: this.helper.V("ui", "upload_file_dialog_title"),
-                apiProvider: this.apiProvider,
-            });
-            window.open();
+        onFromPC: function () {          
+            this.uploadFileDialog.open();
         },
         onFromDS: function () {
+            self = this;
             if (!Ext.isDefined(this.dialog)) {
                 var a = this.getFileExtsByImageType().toString().replace(/\./g, "");
                 this.dialog = new SYNO.SDS.Utils.FileChooser.Chooser({
@@ -125,7 +114,8 @@ export default
                                 if (!this.preCheck(e)) {
                                     return true;
                                 }
-                                this.addStore(e);
+                                debugger;
+                                self.uploadFileDialog.updateFileInfoHandler(e);
                             }, this);
                             this.dialog.close();
                         },
@@ -144,6 +134,14 @@ export default
             this.titleTemplate = this.createTitleTpl();
             this.upperPanel = this.createUpperPanel();
             this.lowerPanel = this.createLowerPanel();
+            this.uploadFileDialog = new SYNOCOMMUNITY.RRManager.Overview.UploadFileDialog({
+                parent: this,
+                owner: this.appWin,
+                helper: this.helper,
+                id: "upload_file_dialog",
+                title: this.helper.V("ui", "upload_file_dialog_title"),
+                apiProvider: this.apiProvider
+            });
 
             this.descriptionMapping = {
                 normal: this.helper.V('ui', 'greetings_text'),

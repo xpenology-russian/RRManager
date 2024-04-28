@@ -313,14 +313,14 @@ export default
             }
         },
         MAX_POST_FILESIZE: Ext.isWebKit ? -1 : window.console && window.console.firebug ? 20971521 : 4294963200,
-        onRunRrUpdateManuallyClick: function () {
+        onRunRrUpdateManuallyClick: function (updateFilePath) {
             const self = this;
             const rrConfigJson = localStorage.getItem('rrConfig');
             const rrConfig = JSON.parse(rrConfigJson);
             const rrManagerConfig = rrConfig.rr_manager_config;
-
-            const url = `${rrManagerConfig?.UPLOAD_DIR_PATH}${rrManagerConfig?.RR_TMP_DIR}/update.zip`;
-            this.apiProvider.getUpdateFileInfo(url).then((responseText) => {
+            //TODO: fix the path
+            //const url = `${rrManagerConfig?.UPLOAD_DIR_PATH}${rrManagerConfig?.RR_TMP_DIR}/${updateFileName}`;
+            this.apiProvider.getUpdateFileInfo(updateFilePath).then((responseText) => {
                 if (!responseText.success) {
                     self.hideProgressIndicator();
                     //helper.unmask(self.owner);
@@ -341,7 +341,7 @@ export default
                     let countUpdatesStatusAttemp = 0;
 
                     const updateStatusInterval = setInterval(async function () {
-                        const checksStatusResponse = await self.callCustomScript('checkUpdateStatus.cgi?filename=rr_update_progress');
+                        const checksStatusResponse = await self.apiProvider.callCustomScript('checkUpdateStatus.cgi?filename=rr_update_progress');
                         if (!checksStatusResponse?.success) {
                             clearInterval(updateStatusInterval);
                             self.helper.unmask(self.owner);
@@ -382,5 +382,21 @@ export default
             }).catch(error => {
                 this.showMsg(`Error. ${error}`);
             });
-        },
+        }, 
+        updateFileInfoHandler: function (a) {
+            let sharesList = JSON.parse(localStorage.getItem('sharesList'));
+            let shareName = a.path.split("/")[1];
+            let shareInfo = sharesList.find(share => share.name.toLocaleLowerCase() === shareName.toLocaleLowerCase());
+            if (!shareInfo) {
+                this.showMsg("Share not found");
+                return;
+            }
+            var shareRealPath = shareInfo.additional.real_path;
+            var filePath = shareRealPath.replace(shareName, a.path.slice(1));
+            this.apiProvider.callCustomScript(`uploadUpdateFileInfo.cgi?file=${encodeURIComponent(filePath)}`).then(() => {
+                //TODO: add confirmation
+                this.onRunRrUpdateManuallyClick(filePath);
+                this.apiProvider.runScheduledTask("RunRrUpdate");
+            });
+        }
     });
