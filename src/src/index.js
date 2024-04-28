@@ -1,5 +1,3 @@
-// Namespace definition
-Ext.ns('SYNOCOMMUNITY.RRManager');
 import AppWindow from './appWindow';
 
 //tab main
@@ -21,6 +19,8 @@ import RrManagerConfigTab from './panels/settings/rrManagerConfigTab';
 import Debug from './tabs/debug';
 import DebugGeneralTab from './panels/debug/generalTab';
 
+// Namespace definition
+Ext.ns('SYNOCOMMUNITY.RRManager');
 // Application definition
 Ext.define('SYNOCOMMUNITY.RRManager.AppInstance', {
     extend: 'SYNO.SDS.AppInstance',
