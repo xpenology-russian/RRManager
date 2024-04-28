@@ -1,4 +1,3 @@
-import SynoApiProvider from '../utils/synoApiProvider';
 import UpdateAvailable from '../components/dialogs/updateAvailableDialog';
 import PasswordConfirmDialog from '../components/dialogs/passwordConfirmDialog';
 import UploadFileDialog from '../components/dialogs/uploadFileDialog';
@@ -188,7 +187,7 @@ export default
             const self = this;
             if (this.loaded) return;
             self.appWin.setStatusBusy(null, null, 50);
-            self.apiProvider.runScheduledTask('MountLoaderDisk');
+            // self.apiProvider.runScheduledTask('MountLoaderDisk');
             (async () => {
                 const [systemInfo, packages, rrCheckVersion] = await Promise.all([
                     self.apiProvider.getSytemInfo(),
@@ -273,6 +272,7 @@ export default
                 "deactivate",
                 this.panels.healthPanel.clickedBox
             );
+
         },
         onDataReady: async function () {
             const e = this;

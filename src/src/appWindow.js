@@ -1,8 +1,10 @@
 import helper from './utils/updateWizardHelper';
+import SynoApiProvider from './utils/synoApiProvider';
 export default
 // Window definition
 Ext.define('SYNOCOMMUNITY.RRManager.AppWindow', {
     helper: SYNOCOMMUNITY.RRManager.UpdateWizard.Helper,
+    apiProvider: SYNOCOMMUNITY.RRManager.SynoApiProvider,
     formatString: function (str, ...args) {
         return str.replace(/{(\d+)}/g, function (match, number) {
             return typeof args[number] !== 'undefined' ? args[number] : match;
@@ -14,6 +16,7 @@ Ext.define('SYNOCOMMUNITY.RRManager.AppWindow', {
     constructor: function (config) {
         const t = this;
         t.callParent([t.fillConfig(config)]);
+        this.apiProvider.init(this.sendWebAPI.bind(this));
     },
     fillConfig: function (e) {
         let t;
@@ -60,6 +63,11 @@ Ext.define('SYNOCOMMUNITY.RRManager.AppWindow', {
     },
 
     onOpen: function (a) {
+        this.apiProvider.runScheduledTask('MountLoaderDisk');
         SYNOCOMMUNITY.RRManager.AppWindow.superclass.onOpen.call(this, a);
+    },
+    onDestroy: function (e) {
+        this.apiProvider.runScheduledTask('UnMountLoaderDisk');
+        SYNOCOMMUNITY.RRManager.AppWindow.superclass.onDestroy.call(this);
     }
 });
