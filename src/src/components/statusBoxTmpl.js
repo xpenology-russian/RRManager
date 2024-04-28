@@ -1,7 +1,7 @@
 export default
     Ext.define("SYNOCOMMUNITY.RRManager.Overview.StatusBoxTmpl", {
         extend: "Ext.XTemplate",
-        helper: SYNOCOMMUNITY.RRManager.UpdateWizard.Helper,
+        helper: SYNOCOMMUNITY.RRManager.Helper,
         formatString: function (str, ...args) {
             return str.replace(/{(\d+)}/g, function (match, number) {
                 return typeof args[number] !== 'undefined' ? args[number] : match;

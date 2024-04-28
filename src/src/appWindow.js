@@ -3,7 +3,7 @@ import SynoApiProvider from './utils/synoApiProvider';
 export default
 // Window definition
 Ext.define('SYNOCOMMUNITY.RRManager.AppWindow', {
-    helper: SYNOCOMMUNITY.RRManager.UpdateWizard.Helper,
+    helper: SYNOCOMMUNITY.RRManager.Helper,
     apiProvider: SYNOCOMMUNITY.RRManager.SynoApiProvider,
     formatString: function (str, ...args) {
         return str.replace(/{(\d+)}/g, function (match, number) {

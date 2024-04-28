@@ -1,5 +1,5 @@
 export default
-SYNOCOMMUNITY.RRManager.UpdateWizard.Helper = {
+SYNOCOMMUNITY.RRManager.Helper = {
     T: function (a, b) {
         return _T(a, b);
     },

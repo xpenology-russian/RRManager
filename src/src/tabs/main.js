@@ -4,7 +4,7 @@ import UploadFileDialog from '../components/dialogs/uploadFileDialog';
 export default
     Ext.define("SYNOCOMMUNITY.RRManager.Overview.Main", {
         extend: "SYNO.ux.Panel",
-        helper: SYNOCOMMUNITY.RRManager.UpdateWizard.Helper,
+        helper: SYNOCOMMUNITY.RRManager.Helper,
         apiProvider: SYNOCOMMUNITY.RRManager.SynoApiProvider,
         formatString: function (str, ...args) {
             return str.replace(/{(\d+)}/g, function (match, number) {

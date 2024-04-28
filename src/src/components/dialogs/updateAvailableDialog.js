@@ -2,7 +2,7 @@
 export default
     Ext.define("SYNOCOMMUNITY.RRManager.Overview.UpdateAvailableDialog", {
         extend: "SYNO.SDS.ModalWindow",
-        helper: SYNOCOMMUNITY.RRManager.UpdateWizard.Helper,
+        helper: SYNOCOMMUNITY.RRManager.Helper,
         constructor: function (a) {
             this.callParent([this.fillConfig(a)]);
         },

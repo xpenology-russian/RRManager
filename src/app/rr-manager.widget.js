@@ -1,13 +1,12 @@
 // Namespace definition
 Ext.ns('SYNOCOMMUNITY.RRManager');
-SYNOCOMMUNITY.RRManager.UpdateWizard = SYNOCOMMUNITY.RRManager.UpdateWizard || {};
 
-// Translator
-_V = function (category, element) {
-    return _TT("SYNOCOMMUNITY.RRManager.Widget", category, element)
-}
 
 Ext.define("SYNOCOMMUNITY.RRManager.Widget", {
+    // Translator
+    _V: function (category, element) {
+        return _TT("SYNOCOMMUNITY.RRManager.Widget", category, element)
+    },
     extend: "Ext.Panel",
     minimizable: true,
     taskButton: undefined,
@@ -80,23 +79,23 @@ Ext.define("SYNOCOMMUNITY.RRManager.Widget", {
     getTitle: function (t) {
         switch (t) {
             case this.TYPE_DANGER:
-                return _V("widget", "danger_status");
+                return this._V("widget", "danger_status");
             case this.TYPE_ATTENTION:
-                return _V("widget", "attention_status");
+                return this._V("widget", "attention_status");
             case this.TYPE_NORMAL:
             default:
-                return _V("widget", "good_status");
+                return this._V("widget", "good_status");
         }
     },
     getStatusMessage: function (t) {
         switch (t) {
             case this.TYPE_DANGER:
-                return _V("widget", "danger_status_message");
+                return this._V("widget", "danger_status_message");
             case this.TYPE_ATTENTION:
-                return _V("widget", "attention_status_message");
+                return this._V("widget", "attention_status_message");
             case this.TYPE_NORMAL:
             default:
-                return _V("widget", "good_status_message");
+                return this._V("widget", "good_status_message");
         }
     },
     setInfo: function (status) {
@@ -304,7 +303,7 @@ Ext.define("SYNOCOMMUNITY.RRManager.Widget", {
     placeHolder: "--",
     initializeSouthTable: function initializeSouthTable() {
         self = this;
-        var b = Ext.util.Format.htmlEncode(_V("widget", "message"));
+        var b = Ext.util.Format.htmlEncode(this._V("widget", "message"));
         var c = Ext.util.Format.htmlEncode(_S("hostname"));
         this.southTable = new Ext.Panel({
             layout: "table",

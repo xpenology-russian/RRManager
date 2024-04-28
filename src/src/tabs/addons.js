@@ -1,7 +1,7 @@
 export default
     Ext.define("SYNOCOMMUNITY.RRManager.Addons.Main", {
         extend: "SYNO.ux.GridPanel",
-        helper: SYNOCOMMUNITY.RRManager.UpdateWizard.Helper,
+        helper: SYNOCOMMUNITY.RRManager.Helper,
         itemsPerPage: 1e3,
         constructor: function (e) {
             this.appWin = e.appWin;

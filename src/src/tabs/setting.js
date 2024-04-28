@@ -1,7 +1,7 @@
 export default
     Ext.define("SYNOCOMMUNITY.RRManager.Setting.Main", {
         extend: "SYNO.SDS.Utils.TabPanel",
-        helper: SYNOCOMMUNITY.RRManager.UpdateWizard.Helper,
+        helper: SYNOCOMMUNITY.RRManager.Helper,
         API: {},
         constructor: function (e) {
             (this.appWin = e.appWin),
