@@ -7,8 +7,6 @@ _V = function (category, element) {
     return _TT("SYNOCOMMUNITY.RRManager.Widget", category, element)
 }
 
-Ext.ns("SYNO.SDS.SystemInfoApp");
-
 Ext.define("SYNOCOMMUNITY.RRManager.Widget", {
     extend: "Ext.Panel",
     minimizable: true,
