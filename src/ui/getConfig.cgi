@@ -87,7 +87,7 @@ if len(user) > 0:
     response["user_config"] = read_user_config()
     response["rr_manager_config"] = read_rrmanager_config('/var/packages/rr-manager/target/ui/config.txt')
     response["rr_manager_privilege"] = read_rrmanager_privilege('/var/packages/rr-manager/conf/privilege')
-    response["rr_manager_resource"] = read_rrmanager_privilege('/var/packages/rr-manager/conf/resource')
+    # response["rr_manager_resource"] = read_rrmanager_privilege('/var/packages/rr-manager/conf/resource')
     response["rr_health"] = read_rr_awaiting_update(response["rr_manager_config"].get("RR_UPDATE_PROGRESS_FILE"))
 else:
     response["status"] = "not authenticated"

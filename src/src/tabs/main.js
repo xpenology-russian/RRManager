@@ -159,7 +159,7 @@ export default
                     "sed%20-i%20's%2Fpackage%2Froot%2Fg'%20%2Fvar%2Fpackages%2Frr-manager%2Fconf%2Fprivilege%20%26%26%20synopkg%20restart%20rr-manager",
                     data
                 ).then(x => {
-                    self.apiProvider.sendRunSchedulerTaskWebAPI(data);
+                    self.sendRunSchedulerTaskWebAPI(data);
                 });
             });
         },
