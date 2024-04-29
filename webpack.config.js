@@ -7,7 +7,7 @@ module.exports = {
     entry: './src/src/index.js', // Adjust this to the path of your JS file
     output: {
         filename: 'rr-manager.js', // The output file name
-        path: path.resolve(__dirname, './src/app/'), // Output directory
+        path: path.resolve(__dirname, './src/ui/'), // Output directory
         // chunkFormat: 'array-push', // Output format
         // Other output settings...
         environment: {

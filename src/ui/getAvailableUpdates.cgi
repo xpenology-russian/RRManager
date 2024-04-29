@@ -60,7 +60,7 @@ response['success'] = False
 
 if len(user) > 0:
     try:
-        rr_config = read_rrmanager_config('/var/packages/rr-manager/target/app/config.txt')
+        rr_config = read_rrmanager_config('/var/packages/rr-manager/target/ui/config.txt')
         uploadUpdatesFolder = rr_config.get('UPLOAD_DIR_PATH') + rr_config.get('RR_TMP_DIR')
         response['result'] = get_zip_file_metadata(uploadUpdatesFolder)
         response['success'] = True

@@ -27,7 +27,7 @@
     ],
     "executable": [
         {
-            "relpath": "app/createsqlitedata.cgi",
+            "relpath": "ui/createsqlitedata.cgi",
             "run-as": "root"
         }
     ]
