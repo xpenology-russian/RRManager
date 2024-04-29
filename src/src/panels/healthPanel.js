@@ -129,6 +129,7 @@ export default
             this.titleTemplate = this.createTitleTpl();
             this.upperPanel = this.createUpperPanel();
             this.lowerPanel = this.createLowerPanel();
+            this.uploadFileDialog = this.createUplaodFileDialog();
 
             this.descriptionMapping = {
                 normal: this.helper.V('ui', 'greetings_text'),

@@ -147,7 +147,7 @@ export default
             this.apiProvider.getPasswordConfirm(data).then(data => {
                 //TODO: remove hardcoded update.zip file name
                 this.apiProvider.createTask("RunRrUpdate",
-                    '.%20%2Fvar%2Fpackages%2Frr-manager%2Ftarget%2Fapp%2Fconfig.txt%20%26%26%20.%20%2Ftmp%2Frr_update_filename%20%26%26%20%2Fusr%2Fbin%2Frr-update.sh%20updateRR%20%22%24UPLOAD_DIR_PATH%24RR_TMP_DIR%22%2Fupdate.zip%20%2Ftmp%2Frr_update_progress',
+                '.%20%2Fvar%2Fpackages%2Frr-manager%2Ftarget%2Fui%2Fconfig.txt%20%26%26%20.%20%2Ftmp%2Frr_update_filename%20%26%26%20%2Fusr%2Fbin%2Frr-update.sh%20updateRR%20%22%24UPDATE_FILE%22%20%2Ftmp%2Frr_update_progress',
                     data
                 );
             });

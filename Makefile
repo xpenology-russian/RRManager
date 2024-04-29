@@ -1,6 +1,6 @@
 SPK_NAME = rr-manager
 SPK_VERS = 2.0
-SPK_REV = 37
+SPK_REV = 38
 SPK_ICON = src/rr-manager.png
 
 DSM_UI_DIR = ui
@@ -81,7 +81,6 @@ rr-manager_extra_install:
 	install -m 644 src/ui/rr-manager.js $(STAGING_DIR)/ui/rr-manager.js
 	install -m 644 src/ui/rr-manager.widget.js $(STAGING_DIR)/ui/rr-manager.widget.js
 	install -m 644 src/ui/helptoc.conf $(STAGING_DIR)/ui/helptoc.conf
-	# install -m 644 src/ui/index.conf $(STAGING_DIR)/ui/index.conf
 	install -m 755 -d $(STAGING_DIR)/ui/help
 	for language in enu fre; do \
 		install -m 755 -d $(STAGING_DIR)/ui/help/$${language}; \
