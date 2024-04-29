@@ -27,6 +27,12 @@ service_postinst ()
             -e "s|@this_is_sharename@|${wizard_download_share}|g" \
         "${SYNOPKG_PKGDEST}/app/config.txt"
     fi
+
+    # shellcheck disable=SC2129
+    echo "Install Help files"
+    pkgindexer_add "${SYNOPKG_PKGDEST}/app/index.conf"
+    pkgindexer_add "${SYNOPKG_PKGDEST}/app/helptoc.conf"
+
     exit 0
 }
 
