@@ -1,8 +1,10 @@
-import SynoApiProvider from '../utils/synoApiProvider';
+import UpdateAvailable from '../components/dialogs/updateAvailableDialog';
+import PasswordConfirmDialog from '../components/dialogs/passwordConfirmDialog';
+import UploadFileDialog from '../components/dialogs/uploadFileDialog';
 export default
     Ext.define("SYNOCOMMUNITY.RRManager.Overview.Main", {
         extend: "SYNO.ux.Panel",
-        helper: SYNOCOMMUNITY.RRManager.UpdateWizard.Helper,
+        helper: SYNOCOMMUNITY.RRManager.Helper,
         apiProvider: SYNOCOMMUNITY.RRManager.SynoApiProvider,
         formatString: function (str, ...args) {
             return str.replace(/{(\d+)}/g, function (match, number) {
@@ -60,12 +62,12 @@ export default
         },
         __checkDownloadFolder: function (callback) {
             var self = this;
-
             const rrConfig = this._getRrConfig();
             const config = rrConfig.rr_manager_config;
             self.apiProvider.getSharesList().then(x => {
                 var shareName = `/${config['SHARE_NAME']}`;
                 var sharesList = x.shares;
+                localStorage.setItem('sharesList', JSON.stringify(sharesList));
                 var downloadsShareMetadata = sharesList.find(x => x.path.toLowerCase() == shareName.toLowerCase());
                 if (!downloadsShareMetadata) {
                     var msg = this.formatString(this.helper.V('ui', 'share_notfound_msg'), config['SHARE_NAME']);
@@ -110,13 +112,13 @@ export default
                     self.appWin.getMsgBox().confirm(
                         "Confirmation",
                         self.formatString(
-                            self.formatString(self.helper.V('ui', 'required_tasks_is_missing'), tasksNames),
+                            self.helper.formatString(self.helper.V('ui', 'required_tasks_is_missing'), tasksNames),
                             self.helper.V('ui', 'required_components_missing')),
                         (userResponse) => {
                             if ("yes" === userResponse) {
                                 craeteTasks();
                             } else {
-                                Ext.getCmp(self.id).getEl().mask(self.formatString(self.helper.V('ui', 'required_components_missing_spinner_msg'), tasksNames), "x-mask-loading");
+                                Ext.getCmp(self.id).getEl().mask(self.helper.formatString(self.helper.V('ui', 'required_components_missing_spinner_msg'), tasksNames), "x-mask-loading");
                             }
                         }, self,
                         {
@@ -133,53 +135,10 @@ export default
         },
         showPasswordConfirmDialog: function (taskName) {
             return new Promise((resolve, reject) => {
-                var window = new SYNO.SDS.ModalWindow({
-                    id: "confirm_password_dialog",
+                var window = new SYNOCOMMUNITY.RRManager.Overview.PasswordConfirmDialog({
+                    owner: this.appWin,
                     title: `${_T("common", "enter_password_to_continue")} for task: ${taskName}.`,
-                    width: 500,
-                    height: 200,
-                    resizable: false,
-                    layout: "fit",
-                    buttons: [
-                        {
-                            xtype: "syno_button",
-                            text: _T("common", "alt_cancel"),
-                            scope: this,
-                            handler: function () {
-                                Ext.getCmp("confirm_password_dialog").close();
-                            },
-                        },
-                        {
-                            xtype: "syno_button",
-                            text: _T("common", "submit"),
-                            btnStyle: "blue",
-                            scope: this,
-                            handler: function () {
-                                const passwordValue = Ext.getCmp("confirm_password").getValue();
-                                Ext.getCmp("confirm_password_dialog").close();
-                                resolve(passwordValue);
-                            }
-                        },
-                    ],
-                    items: [
-                        {
-                            xtype: "syno_formpanel",
-                            id: "password_form_panel",
-                            bodyStyle: "padding: 0",
-                            items: [
-                                {
-                                    xtype: "syno_displayfield",
-                                    value: String.format(_T("common", "enter_user_password")),
-                                },
-                                {
-                                    xtype: "syno_textfield",
-                                    fieldLabel: _T("common", "password"),
-                                    textType: "password",
-                                    id: "confirm_password",
-                                },
-                            ],
-                        },
-                    ],
+                    confirmPasswordHandler: resolve
                 });
                 window.open();
             });
@@ -187,8 +146,8 @@ export default
         createAndRunSchedulerTask: function (data) {
             this.apiProvider.getPasswordConfirm(data).then(data => {
                 //TODO: remove hardcoded update.zip file name
-                this.createTask("RunRrUpdate",
-                    ".%20%2Fvar%2Fpackages%2Frr-manager%2Ftarget%2Fapp%2Fconfig.txt%20%26%26%20%2Fusr%2Fbin%2Frr-update.sh%20updateRR%20%22%24UPLOAD_DIR_PATH%24RR_TMP_DIR%22%2Fupdate.zip%20%2Ftmp%2Frr_update_progress",
+                this.apiProvider.createTask("RunRrUpdate",
+                '.%20%2Fvar%2Fpackages%2Frr-manager%2Ftarget%2Fui%2Fconfig.txt%20%26%26%20.%20%2Ftmp%2Frr_update_filename%20%26%26%20%2Fusr%2Fbin%2Frr-update.sh%20updateRR%20%22%24UPDATE_FILE%22%20%2Ftmp%2Frr_update_progress',
                     data
                 );
             });
@@ -196,11 +155,11 @@ export default
         createAndRunSchedulerTaskSetRootPrivilegesForRrManager: function (data) {
             self = this;
             this.apiProvider.getPasswordConfirm(data).then(data => {
-                this.createTask("SetRootPrivsToRrManager",
+                this.apiProvider.createTask("SetRootPrivsToRrManager",
                     "sed%20-i%20's%2Fpackage%2Froot%2Fg'%20%2Fvar%2Fpackages%2Frr-manager%2Fconf%2Fprivilege%20%26%26%20synopkg%20restart%20rr-manager",
                     data
                 ).then(x => {
-                    self.apiProvider.sendRunSchedulerTaskWebAPI(data);
+                    self.sendRunSchedulerTaskWebAPI(data);
                 });
             });
         },
@@ -212,58 +171,15 @@ export default
                 );
             });
         },
-
-
         showPrompt: function (title, message, text, yesCallback) {
-            var window = new SYNO.SDS.ModalWindow({
-                closeAction: "hide",
-                cls: "x-window-dlg",
-                layout: 'anchor',
-                width: 750,
-                height: 600,
-                resizable: false,
-                modal: true,
+            var window = new SYNOCOMMUNITY.RRManager.Overview.UpdateAvailableDialog({
+                owner: this.appWin,
                 title: title,
-                buttons: [{
-                    text: this.helper.T("common", "alt_cancel"),
-                    // Handle Cancel
-                    handler: function () {
-                        window.close();
-                    }
-                }, {
-                    text: this.helper.V("ui", "alt_confirm"),
-                    itemId: "confirm",
-                    btnStyle: "blue",
-                    // Handle Confirm
-                    handler: function () {
-                        if (yesCallback) yesCallback();
-                        window.close();
-                    }
-                }],
-                items: [
-                    {
-                        // Display the prompt message
-                        xtype: 'box',
-                        autoEl: { tag: 'div', html: message },
-                        style: 'margin: 10px;',
-                        anchor: '100%'
-                    },
-                    {
-                        // Display changelog title
-                        xtype: 'syno_displayfield',
-                        anchor: '100%',
-                        style: 'margin: 10px; font-weight: bold;',
-                        value: 'Changelog:'
-                    },
-                    {
-                        // Display the changelog in a scrollable view
-                        xtype: 'box',
-                        autoEl: { tag: 'div', html: text.replace(/\n/g, '<br>') },
-                        style: 'margin: 10px; overflow-y: auto; border: 1px solid #ccc; padding: 5px;',
-                        height: '75%', // Fixed height for the scrollable area
-                        anchor: '100%'
-                    }
-                ]
+                message: message,
+                msg: text,
+                msgItemCount: 3,
+                confirmCheck: true,
+                btnOKHandler: yesCallback
             });
             window.open();
         },
@@ -271,14 +187,19 @@ export default
             const self = this;
             if (this.loaded) return;
             self.appWin.setStatusBusy(null, null, 50);
-            self.apiProvider.runScheduledTask('MountLoaderDisk');
+            // self.apiProvider.runScheduledTask('MountLoaderDisk');
             (async () => {
-                self.systemInfo = await self.apiProvider.getSytemInfo();
-                self.packages = await self.apiProvider.getPackagesList();
-                self.rrCheckVersion = await self.apiProvider.checkRRVersion();
-                if (self.systemInfo && self.packages) {
-                    self.systemInfoTxt = `Model: ${self.systemInfo?.model}, RAM: ${self.systemInfo?.ram} MB, DSM version: ${self.systemInfo?.version_string} `;
-                    const rrManagerPackage = self.packages.packages.find((packageInfo) => packageInfo.id == 'rr-manager');
+                const [systemInfo, packages, rrCheckVersion] = await Promise.all([
+                    self.apiProvider.getSytemInfo(),
+                    self.apiProvider.getPackagesList(),
+                    //TODO: uncomment when RR version will be available
+                    self.apiProvider.checkRRVersion()
+                ]);
+
+                if (systemInfo && packages) {
+                    self.rrCheckVersion = rrCheckVersion;
+                    self.systemInfoTxt = `Model: ${systemInfo?.model}, RAM: ${systemInfo?.ram} MB, DSM version: ${systemInfo?.version_string} `;
+                    const rrManagerPackage = packages.packages.find((packageInfo) => packageInfo.id == 'rr-manager');
                     self.rrManagerVersionText = `🛡️RR Manager v.: ${rrManagerPackage?.version}`;
                     self.panels.healthPanel.fireEvent(
                         "select",
@@ -296,39 +217,43 @@ export default
                         });
                         self.installed = true;
                     }
-
                     self.panels.healthPanel.fireEvent("data_ready");
                     self.loaded = true;
                 }
-                function donwloadUpdate() {
-                    SYNO.API.currentManager.requestAPI('SYNO.DownloadStation2.Task', "create", "2", {
-                        type: "url",
-                        destination: `${self.rrManagerConfig.SHARE_NAME}/${self.rrManagerConfig.RR_TMP_DIR}`,
-                        create_list: true,
-                        url: [self.rrCheckVersion.updateAllUrl]
-                    });
-                }
-                if (self?.rrCheckVersion?.status == "update available"
-                    && self?.rrCheckVersion?.tag != "null"
-                    && self.rrConfig.rr_version !== self?.rrCheckVersion?.tag) {
+
+                if (self.isUpdateAvailable(rrCheckVersion)) {
                     self.showPrompt(self.helper.V('ui', 'prompt_update_available_title'),
-                        self.formatString(self.helper.V('ui', 'prompt_update_available_message'), self.rrCheckVersion.tag), self.rrCheckVersion.notes, donwloadUpdate);
+                        self.helper.formatString(self.helper.V('ui', 'prompt_update_available_message'), rrCheckVersion.tag),
+                        rrCheckVersion.notes, self.donwloadUpdate.bind(self));
                 }
             })();
             self.__checkDownloadFolder(self.__checkRequiredTasks.bind(self));
+        },
+        isUpdateAvailable: function (rrCheckVersion) {
+            return rrCheckVersion?.status == "update available"
+                && rrCheckVersion?.tag != "null"
+                && this.rrConfig.rr_version !== rrCheckVersion?.tag;
         },
 
         showMsg: function (msg) {
             this.owner.getMsgBox().alert("title", msg);
         },
-
+        donwloadUpdate: function () {
+            self = this;
+            SYNO.API.currentManager.requestAPI('SYNO.DownloadStation2.Task', "create", "2", {
+                type: "url",
+                destination: `${self.rrManagerConfig.SHARE_NAME}/${self.rrManagerConfig.RR_TMP_DIR}`,
+                create_list: true,
+                url: [self.rrCheckVersion.updateAllUrl]
+            });
+        },
         updateAllForm: async function () {
-            that = this.appWin;
             this.owner.setStatusBusy();
             try {
                 const rrConfig = await this.getConf();
                 var configName = 'rrConfig';
-                that[configName] = rrConfig;
+
+                this.appWin[configName] = rrConfig;
                 this[configName] = rrConfig;
 
                 localStorage.setItem(configName, JSON.stringify(rrConfig));
@@ -338,7 +263,6 @@ export default
                 this.owner.clearStatusBusy();
             }
         },
-        _prefix: '/webman/3rdparty/rr-manager/',
 
         getConf: function () {
             return this.apiProvider.callCustomScript('getConfig.cgi')
@@ -348,6 +272,7 @@ export default
                 "deactivate",
                 this.panels.healthPanel.clickedBox
             );
+
         },
         onDataReady: async function () {
             const e = this;
@@ -357,8 +282,8 @@ export default
         },
         getActivateOverviewPanel: function () {
             if (this.getActiveTab()) {
-              return this.getActiveTab().overviewPanel;
+                return this.getActiveTab().overviewPanel;
             }
             return null;
-          },
+        },
     });

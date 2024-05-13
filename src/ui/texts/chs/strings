@@ -1,0 +1,93 @@
+[app]
+app_name = "RR Manager"
+description = "RR Manager"
+index_title = "Help documentation"
+
+[ui]
+greetings_text = "欢迎使用RR Manager！"
+tab_general = "常规"
+tab_addons = "插件"
+tab_configuration = "配置"
+tab_debug = "调试"
+
+alt_confirm = "确认"
+confirm_system_clean_up_msg = "是否要运行系统清理脚本？"
+confirm_system_clean_up_title = "确认系统清理"
+
+upload_file_dialog_title = "上传文件"
+
+loading_text = "加载中..."
+system_info = "🖥️系统信息："
+
+rr_actions = "RR Loader 操作"
+required_tasks_is_missing = "系统中缺少以下必需的任务 {0}，需要输入密码。是否要创建它们？"
+tasks_created_msg = "任务已成功创建。请重新启动 RR Manager 应用程序。"
+share_notfound_msg = "注意！找不到 {0} 文件夹。请创建共享/文件夹并重新启动应用程序。"
+required_components_missing-title = "缺少必需组件"
+required_components_missing_spinner_msg = "似乎系统中缺少一些任务：{0}。请在开始使用 RR Manager 之前完成入门流程。"
+update_confirm_title = "确认更新"
+uploading_file = "正在上传文件..."
+save_addons_changes = "保存插件更改"
+
+rr_config_applied="RR 配置已成功应用。请重新启动 NAS 以应用更改。"
+checking_dependencies_loader="正在检查依赖项..."
+
+section_rr_actions="更新 RR Loader"
+run_update="上传文件"
+
+frm_validation_fill_required_fields="请填写必填字段。"
+frm_validation_no_change="无需保存"
+
+save_addons_btn="保存插件"
+
+col_system="系统"
+col_installed="已安装"
+col_version="版本"
+col_name="名称"
+col_description="描述"
+
+
+prompt_update_available_title="可用更新"
+prompt_update_available_message="RR 的新版本 {0} 可用。是否要通过下载管理器下载它？"
+
+addons_all="全部"
+addons_system="系统"
+
+from_pc="从 PC"
+from_ds="从 DiskStation"
+
+image_name="镜像名称"
+
+#TODO: translate
+[upload_file_dialog]
+lb_select_update_file = "请选择更新文件："
+choose_file_title = "选择更新文件"
+select_file = "选择文件"
+file_uploading_succesfull_msg = "文件已成功上传。是否要运行更新程序？"
+file_uploading_failed_msg = "文件上传错误。"
+completed = "已完成："
+unable_update_rr_msg = "无法更新 RR：{0}。请上传文件后重试。"
+update_rr_completed = "RR 已成功更新。请重新启动 NAS。"
+update_rr_progress_msg = "正在进行 RR 更新：{0}。状态：{1}。"
+update_rr_error_msg = "无法更新 RR。状态码：{0}，原因：{1}"
+update_rr_confirmation = "当前 RR 版本：{0}。更新文件版本：{1}"
+update_rr_confirmation_title = "确认更新"
+upload_update_file_form_validation_invalid_msg = "请在开始上传之前选择更新/更新全部文件。"
+btn_proceed = "继续"
+
+[health_panel]
+btn_from_pc = "从 PC"
+btn_from_ds = "从 DiskStation"
+
+[update_available_dialog]
+checkbox_dont_show_again = "不再显示"
+  
+[widget]
+danger_status="危险！"
+danger_status_message="您的 RR 无法正常工作。"
+
+attention_status="注意！"
+attention_status_message="您的 RR 正在等待重启。"
+
+good_status="健康"
+good_status_message="您的 RR 正常运行。"

@@ -44,6 +44,22 @@ def read_rrmanager_config(file_path):
     except e:
         return "{}"
 
+def read_rrmanager_privilege(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            # Parse JSON data directly into a Python dictionary
+            config = json.load(file)
+        return config
+    except IOError as e:
+        # Handle I/O errors (e.g., file not found)
+        return f"Error reading {file_path}: {e}"
+    except json.JSONDecodeError as e:
+        # Handle errors caused by incorrect JSON formatting
+        return f"Error decoding JSON from {file_path}: {e}"
+    except Exception as e:
+        # Generic exception handler for any other unforeseen errors
+        return "{}"
+
 # implement check that the file exists and read it to get progress and if exists return status "awaiting_reboot". If not return status "healthy"
 def read_rr_awaiting_update(fileName):
     file_path = os.path.join('/tmp', fileName)
@@ -69,7 +85,9 @@ if len(user) > 0:
     # Read and add rr_version to the response
     response["rr_version"] = read_rr_version()
     response["user_config"] = read_user_config()
-    response["rr_manager_config"] = read_rrmanager_config('/var/packages/rr-manager/target/app/config.txt')
+    response["rr_manager_config"] = read_rrmanager_config('/var/packages/rr-manager/target/ui/config.txt')
+    response["rr_manager_privilege"] = read_rrmanager_privilege('/var/packages/rr-manager/conf/privilege')
+    # response["rr_manager_resource"] = read_rrmanager_privilege('/var/packages/rr-manager/conf/resource')
     response["rr_health"] = read_rr_awaiting_update(response["rr_manager_config"].get("RR_UPDATE_PROGRESS_FILE"))
 else:
     response["status"] = "not authenticated"

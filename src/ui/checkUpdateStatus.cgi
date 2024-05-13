@@ -31,7 +31,7 @@ response['success'] = False
 if len(user) > 0:
     # Parse query string
     arguments = cgi.FieldStorage()
-    rr_manager_config = read_rrmanager_config('/var/packages/rr-manager/target/app/config.txt')
+    rr_manager_config = read_rrmanager_config('/var/packages/rr-manager/target/ui/config.txt')
     filename = rr_manager_config.get('RR_UPDATE_PROGRESS_FILE')
 
     if filename:

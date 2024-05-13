@@ -1,5 +1,3 @@
-// Namespace definition
-Ext.ns('SYNOCOMMUNITY.RRManager');
 import AppWindow from './appWindow';
 
 //tab main
@@ -15,22 +13,14 @@ import Settings from './tabs/setting';
 import SettingsGeneralTab from './panels/settings/generalTab';
 import RRConfigTab from './panels/settings/rrConfigTab';
 import SynoInfoTab from './panels/settings/synoInfoTab';
+import RrManagerConfigTab from './panels/settings/rrManagerConfigTab';
 
 //tab debug
 import Debug from './tabs/debug';
 import DebugGeneralTab from './panels/debug/generalTab';
 
-//UpdateWizard
-import UtilsStep from './components/updateWizard/utilsStep';
-import UpdateWizardHelper from './utils/updateWizardHelper';
-import UtilsWizard from './components/updateWizard/utilsWizard';
-import UpdateWizard from './components/updateWizard/wizard';
-import ImagePanel from './components/updateWizard/imagePanel';
-import NewImagePanel from './components/updateWizard/newImagePanel';
-import StoragePanel from './components/updateWizard/storagePanel';
-
-
-
+// Namespace definition
+Ext.ns('SYNOCOMMUNITY.RRManager');
 // Application definition
 Ext.define('SYNOCOMMUNITY.RRManager.AppInstance', {
     extend: 'SYNO.SDS.AppInstance',

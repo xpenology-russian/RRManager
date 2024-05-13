@@ -66,8 +66,8 @@ export default
                     filetype: 'dir', // URL-encode special characters if needed
                     sort_by: 'name',
                     check_dir: true,
-                    additional: '["real_path","owner","time","perm","mount_point_type","sync_share","volume_status","indexed","hybrid_share","worm_share"]',
-                    enum_cluster: true,
+                    additional: ["real_path"],
+                    enum_cluster: false,
                     node: 'fm_root'
                 };
                 let args = {

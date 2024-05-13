@@ -1,10 +1,10 @@
 SPK_NAME = rr-manager
 SPK_VERS = 2.0
-SPK_REV = 28
+SPK_REV = 38
 SPK_ICON = src/rr-manager.png
 
-DSM_UI_DIR = app
-DSM_UI_CONFIG = src/app/config
+DSM_UI_DIR = ui
+DSM_UI_CONFIG = src/ui/config
 DSM_APP_NAME = SYNOCOMMUNITY.RRManager.AppInstance
 
 PYTHON_PACKAGE = python311
@@ -63,29 +63,31 @@ rr-manager_extra_install:
 	install -m 755 -d $(STAGING_DIR)/share/wheelhouse/
 	install -m 644 src/requirements.txt $(STAGING_DIR)/share/wheelhouse/requirements.txt
 
-	install -m 755 -d $(STAGING_DIR)/app/
-	install -m 755 -d $(STAGING_DIR)/app/libs/
-	install -m 755 src/app/getConfig.cgi $(STAGING_DIR)/app/getConfig.cgi
-	install -m 755 src/app/getNetworkInfo.cgi $(STAGING_DIR)/app/getNetworkInfo.cgi
-	install -m 755 src/app/getRrReleaseInfo.cgi $(STAGING_DIR)/app/getRrReleaseInfo.cgi
-	install -m 755 src/app/config.txt $(STAGING_DIR)/app/config.txt
-	install -m 755 src/app/style.css $(STAGING_DIR)/app/style.css
-	install -m 755 src/app/getAddons.cgi $(STAGING_DIR)/app/getAddons.cgi
-	install -m 755 src/app/getModules.cgi $(STAGING_DIR)/app/getModules.cgi
-	install -m 755 src/app/readUpdateFile.cgi $(STAGING_DIR)/app/readUpdateFile.cgi
-	install -m 755 src/app/uploadConfigFile.cgi $(STAGING_DIR)/app/uploadConfigFile.cgi
-	install -m 755 src/app/checkUpdateStatus.cgi $(STAGING_DIR)/app/checkUpdateStatus.cgi
-	install -m 644 src/app/config $(STAGING_DIR)/app/config
-	install -m 644 src/app/rr-manager.js $(STAGING_DIR)/app/rr-manager.js
-	install -m 644 src/app/rr-manager.widget.js $(STAGING_DIR)/app/rr-manager.widget.js
-	install -m 644 src/app/helptoc.conf $(STAGING_DIR)/app/helptoc.conf
-	install -m 755 -d $(STAGING_DIR)/app/help
+	install -m 755 -d $(STAGING_DIR)/ui/
+	install -m 755 -d $(STAGING_DIR)/ui/libs/
+	install -m 755 src/ui/getConfig.cgi $(STAGING_DIR)/ui/getConfig.cgi
+	install -m 755 src/ui/getNetworkInfo.cgi $(STAGING_DIR)/ui/getNetworkInfo.cgi
+	install -m 755 src/ui/getRrReleaseInfo.cgi $(STAGING_DIR)/ui/getRrReleaseInfo.cgi
+	install -m 755 src/ui/config.txt $(STAGING_DIR)/ui/config.txt
+	install -m 755 src/ui/style.css $(STAGING_DIR)/ui/style.css
+	install -m 755 src/ui/getAddons.cgi $(STAGING_DIR)/ui/getAddons.cgi
+	install -m 755 src/ui/getModules.cgi $(STAGING_DIR)/ui/getModules.cgi
+	install -m 755 src/ui/readUpdateFile.cgi $(STAGING_DIR)/ui/readUpdateFile.cgi
+	install -m 755 src/ui/uploadConfigFile.cgi $(STAGING_DIR)/ui/uploadConfigFile.cgi
+	install -m 755 src/ui/checkUpdateStatus.cgi $(STAGING_DIR)/ui/checkUpdateStatus.cgi
+	install -m 755 src/ui/getAvailableUpdates.cgi $(STAGING_DIR)/ui/getAvailableUpdates.cgi
+	install -m 755 src/ui/uploadUpdateFileInfo.cgi $(STAGING_DIR)/ui/uploadUpdateFileInfo.cgi
+	install -m 644 src/ui/config $(STAGING_DIR)/ui/config
+	install -m 644 src/ui/rr-manager.js $(STAGING_DIR)/ui/rr-manager.js
+	install -m 644 src/ui/rr-manager.widget.js $(STAGING_DIR)/ui/rr-manager.widget.js
+	install -m 644 src/ui/helptoc.conf $(STAGING_DIR)/ui/helptoc.conf
+	install -m 755 -d $(STAGING_DIR)/ui/help
 	for language in enu fre; do \
-		install -m 755 -d $(STAGING_DIR)/app/help/$${language}; \
-		install -m 644 src/app/help/$${language}/simpleapp_index.html $(STAGING_DIR)/app/help/$${language}/simpleapp_index.html; \
+		install -m 755 -d $(STAGING_DIR)/ui/help/$${language}; \
+		install -m 644 src/ui/help/$${language}/simpleapp_index.html $(STAGING_DIR)/ui/help/$${language}/simpleapp_index.html; \
 	done
-	install -m 755 -d $(STAGING_DIR)/app/texts
+	install -m 755 -d $(STAGING_DIR)/ui/texts
 	for language in enu rus chs cht krn; do \
-		install -m 755 -d $(STAGING_DIR)/app/texts/$${language}; \
-		install -m 644 src/app/texts/$${language}/strings $(STAGING_DIR)/app/texts/$${language}/strings; \
+		install -m 755 -d $(STAGING_DIR)/ui/texts/$${language}; \
+		install -m 644 src/ui/texts/$${language}/strings $(STAGING_DIR)/ui/texts/$${language}/strings; \
 	done

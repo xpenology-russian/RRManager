@@ -1,11 +1,6 @@
 # What is that?
 ![Main Screen](img/main.gif)
 RRManager is a Redpill Recovery DSM application aimed to provide the ability to configure/update RR without booting to RR recovery. This package is for experienced users. 
-This version with support russian language, more details: https://github.com/T-REX-XP/RRManager/issues/24
-
-RRManager - это DSM-приложение для Redpill Recovery, предназначенное для настройки/обновления RR без загрузки восстановления RR. 
-Этот пакет предназначен для опытных пользователей. Данная версия поддерживает русский язык.
-
 
 ❗❗❗ Required `RR v.24.2.4`
 
