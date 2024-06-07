@@ -50,3 +50,10 @@ service_postupgrade ()
     rm -fr ${TMP_DIR}/${PACKAGE}
     exit 0
 }
+
+service_postuninst ()
+{
+    echo "DELETE FROM task WHERE task_name='RunRrUpdate'" | sqlite3 /usr/syno/etc/esynoscheduler/esynoscheduler.db
+    echo "DELETE FROM task WHERE task_name='ApplyRRConfig'" | sqlite3 /usr/syno/etc/esynoscheduler/esynoscheduler.db
+    exit 0
+}
