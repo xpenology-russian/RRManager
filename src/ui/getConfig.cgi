@@ -3,6 +3,7 @@
 import os
 import json
 import sys
+import subprocess
 
 from pathlib import Path
 path_root = Path(__file__).parents[1]
@@ -63,7 +64,16 @@ def read_rr_awaiting_update(fileName):
     except e:
         return "healthy"
 
-    
+def callMountLoaderScript(action):
+    process = subprocess.Popen(['/usr/bin/rr-loaderdisk.sh', action],
+                                stdout=subprocess.DEVNULL,
+                                stderr=subprocess.DEVNULL)
+
+def mountLoader():
+    callMountLoaderScript('mountLoaderDisk')
+
+def unmountLoader():
+    callMountLoaderScript('unmountLoaderDisk')
 # Authenticate the user
 f = os.popen('/usr/syno/synoman/webman/modules/authenticate.cgi', 'r')
 user = f.read().strip()
@@ -71,6 +81,7 @@ user = f.read().strip()
 response = {}
 
 if len(user) > 0:
+    mountLoader()
     response["status"] = "authenticated"
     response["user"] = user
 
@@ -83,6 +94,7 @@ if len(user) > 0:
     response["rr_manager_privilege"] = read_rrmanager_privilege('/var/packages/rr-manager/conf/privilege')
     # response["rr_manager_resource"] = read_rrmanager_privilege('/var/packages/rr-manager/conf/resource')
     response["rr_health"] = read_rr_awaiting_update(response["rr_manager_config"].get("RR_UPDATE_PROGRESS_FILE"))
+    unmountLoader()
 else:
     response["status"] = "not authenticated"
 

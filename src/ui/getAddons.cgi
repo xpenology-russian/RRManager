@@ -4,6 +4,7 @@ import os
 import json
 import sys
 import cgi
+import subprocess
 from pathlib import Path
 path_root = Path(__file__).parents[1]
 sys.path.append(str(path_root)+'/libs')
@@ -25,9 +26,8 @@ def read_user_config():
         return "{}"
 
 
-userConfig = read_user_config()
 
-def read_manifests_in_subdirs(parent_directory):
+def read_manifests_in_subdirs(parent_directory,userConfig):
     manifests = []
 
     for subdir in next(os.walk(parent_directory))[1]: # Iterates through each subdirectory
@@ -57,11 +57,27 @@ user = f.read().strip()
 ADDONS_PATH = '/mnt/p3/addons/'
 response = {}
 
+def callMountLoaderScript(action):
+    process = subprocess.Popen(['/usr/bin/rr-loaderdisk.sh', action],
+                                stdout=subprocess.DEVNULL,
+                                stderr=subprocess.DEVNULL)
+
+def mountLoader():
+    callMountLoaderScript('mountLoaderDisk')
+
+def unmountLoader():
+    callMountLoaderScript('unmountLoaderDisk')
+
 if len(user) > 0:
-    addons = read_manifests_in_subdirs(ADDONS_PATH)
+    # call function to mount the loader by calling the following bash /usr/bin/rr-loaderdisk.sh mountLoaderDisk
+    mountLoader()
+    userConfig = read_user_config()
+    addons = read_manifests_in_subdirs(ADDONS_PATH,userConfig)
     response['result'] = addons
     response['success'] = True
     response['total'] = len(addons)
+    # call function to unmount the loader by calling the following bash /usr/bin/rr-loaderdisk.sh unmountLoaderDisk
+    unmountLoader()
 else:
     response["status"] = "not authenticated"
 

@@ -26,5 +26,15 @@
             "action": "postinst",
             "run-as": "package"
         }
+    ],
+    "executable": [
+        {
+            "relpath": "ui/getConfig.cgi",
+            "run-as": "package"
+        },
+        {
+            "relpath": "ui/getAddons.cgi",
+            "run-as": "package"
+        }
     ]
 }

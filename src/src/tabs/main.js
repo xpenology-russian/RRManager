@@ -164,7 +164,6 @@ export default
             const self = this;
             if (this.loaded) return;
             self.appWin.setStatusBusy(null, null, 50);
-            // self.apiProvider.runScheduledTask('MountLoaderDisk');
             (async () => {
                 const [systemInfo, packages, rrCheckVersion] = await Promise.all([
                     self.apiProvider.getSytemInfo(),
