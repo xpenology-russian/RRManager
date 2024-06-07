@@ -77,6 +77,10 @@ rr-manager_extra_install:
 	install -m 755 src/ui/checkUpdateStatus.cgi $(STAGING_DIR)/ui/checkUpdateStatus.cgi
 	install -m 755 src/ui/getAvailableUpdates.cgi $(STAGING_DIR)/ui/getAvailableUpdates.cgi
 	install -m 755 src/ui/uploadUpdateFileInfo.cgi $(STAGING_DIR)/ui/uploadUpdateFileInfo.cgi
+
+	install -m 755 src/ui/tasks.sql $(STAGING_DIR)/ui/tasks.sql
+	install -m 755 src/ui/install.sh $(STAGING_DIR)/ui/install.sh
+
 	install -m 644 src/ui/config $(STAGING_DIR)/ui/config
 	install -m 644 src/ui/rr-manager.js $(STAGING_DIR)/ui/rr-manager.js
 	install -m 644 src/ui/rr-manager.widget.js $(STAGING_DIR)/ui/rr-manager.widget.js

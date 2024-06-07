@@ -11,14 +11,6 @@ sys.path.append(str(path_root)+'/libs')
 import libs.yaml as yaml
 print("Content-type: application/json\n")
 
-# # Function to read rr_version from a file
-def read_rr_version():
-    try:
-        with open('/mnt/p1/RR_VERSION', 'r') as file:
-            return file.read().strip()  # Read and strip newline characters
-    except IOError as e:
-        return f"Error reading RR_VERSION: {e}"
-
 #Function to read user configuration from a YAML file
 def read_user_config():
     try:
@@ -37,7 +29,7 @@ def read_rrmanager_config(file_path):
                 line = line.strip()
                 if line and not line.startswith('#'):
                     key, value = line.split('=')
-                    config[key.strip()] = value.strip()
+                    config[key.strip()] = value.strip().replace('"', '')
         return config
     except IOError as e:
         return f"Error reading user-config.yml: {e}"
@@ -83,7 +75,9 @@ if len(user) > 0:
     response["user"] = user
 
     # Read and add rr_version to the response
-    response["rr_version"] = read_rr_version()
+    rrData = read_rrmanager_config('/usr/rr/VERSION')
+    response["rr_version"] = rrData.get('LOADERVERSION')
+    # response["rr_data"] = rrData
     response["user_config"] = read_user_config()
     response["rr_manager_config"] = read_rrmanager_config('/var/packages/rr-manager/target/ui/config.txt')
     response["rr_manager_privilege"] = read_rrmanager_privilege('/var/packages/rr-manager/conf/privilege')

@@ -81,29 +81,23 @@ export default
 
         __checkRequiredTasks: async function () {
             var self = this;
-            var requiredTasks = [{
-                name: "RunRrUpdate",
-                createTaskCallback: self.createAndRunSchedulerTask.bind(this)
-            }, {
-                name: "SetRootPrivsToRrManager",
-                createTaskCallback: self.createAndRunSchedulerTaskSetRootPrivilegesForRrManager.bind(this)
-            }, {
-                name: "ApplyRRConfig",
-                createTaskCallback: self.createSchedulerTaskApplyRRConfig.bind(this)
-            }];
-
+            var tasksList = ["RunRrUpdate", "ApplyRRConfig"];
+            //list of required tasks
+            var requiredTasks = [
+                {
+                    name: "SetRootPrivsToRrManager",
+                    createTaskCallback: self.createAndRunSchedulerTaskSetRootPrivilegesForRrManager.bind(this)
+                }];
             try {
                 let response = await self.apiProvider.getTaskList();
                 var tasks = response.tasks;
-                var tasksToCreate = requiredTasks.filter(task => !tasks.find(x => x.name === task.name));
+                var tasksToCreate = tasksList.filter(task => !tasks.find(x => x.name === task));
                 if (tasksToCreate.length > 0) {
-                    let tasksNames = tasksToCreate.map(task => task.name).join(', ');
                     async function craeteTasks() {
-                        for (let task of tasksToCreate) {
-                            if (task.createTaskCallback) {
-                                var data = await self.showPasswordConfirmDialog(task.name);
-                                task.createTaskCallback(data);
-                            }
+                        const task = requiredTasks[0];
+                        if (task.createTaskCallback) {
+                            var data = await self.showPasswordConfirmDialog(task.name);
+                            task.createTaskCallback(data);
                         }
                         // After all tasks have been created, you might want to notify the user.
                         self.showMsg(self.helper.V('ui', 'tasks_created_msg'));
@@ -112,7 +106,7 @@ export default
                     self.appWin.getMsgBox().confirm(
                         "Confirmation",
                         self.formatString(
-                            self.helper.formatString(self.helper.V('ui', 'required_tasks_is_missing'), tasksNames),
+                            self.helper.formatString(self.helper.V('ui', 'required_tasks_is_missing'), tasksToCreate),
                             self.helper.V('ui', 'required_components_missing')),
                         (userResponse) => {
                             if ("yes" === userResponse) {
@@ -143,32 +137,15 @@ export default
                 window.open();
             });
         },
-        createAndRunSchedulerTask: function (data) {
-            this.apiProvider.getPasswordConfirm(data).then(data => {
-                //TODO: remove hardcoded update.zip file name
-                this.apiProvider.createTask("RunRrUpdate",
-                '.%20%2Fvar%2Fpackages%2Frr-manager%2Ftarget%2Fui%2Fconfig.txt%20%26%26%20.%20%2Ftmp%2Frr_update_filename%20%26%26%20%2Fusr%2Fbin%2Frr-update.sh%20updateRR%20%22%24UPDATE_FILE%22%20%2Ftmp%2Frr_update_progress',
-                    data
-                );
-            });
-        },
         createAndRunSchedulerTaskSetRootPrivilegesForRrManager: function (data) {
             self = this;
             this.apiProvider.getPasswordConfirm(data).then(data => {
                 this.apiProvider.createTask("SetRootPrivsToRrManager",
-                    "sed%20-i%20's%2Fpackage%2Froot%2Fg'%20%2Fvar%2Fpackages%2Frr-manager%2Fconf%2Fprivilege%20%26%26%20synopkg%20restart%20rr-manager",
+                    "/var/packages/rr-manager/target/ui/install.sh",
                     data
                 ).then(x => {
                     self.sendRunSchedulerTaskWebAPI(data);
                 });
-            });
-        },
-        createSchedulerTaskApplyRRConfig: function (data) {
-            this.apiProvider.getPasswordConfirm(data).then(data => {
-                this.apiProvider.createTask("ApplyRRConfig",
-                    "cp%20%2Ftmp%2Fuser-config.yml%20%2Fmnt%2Fp1%2Fuser-config.yml%20%26%26%20cp%20%2Ftmp%2F.build%20%2Fmnt%2Fp1%2F.build",
-                    data
-                );
             });
         },
         showPrompt: function (title, message, text, yesCallback) {
