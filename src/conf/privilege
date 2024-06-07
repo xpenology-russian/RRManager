@@ -2,33 +2,29 @@
     "defaults": {
         "run-as": "package"
     },
+    "join-groupname": "http",
     "username": "sc-rr-manager",
+    "groupname": "synocommunity",
     "ctrl-script": [
         {
             "action": "start",
-            "run-as": "root"
+            "run-as": "package"
         },
         {
             "action": "stop",
-            "run-as": "root"
+            "run-as": "package"
         },
         {
             "action": "preuninst",
-            "run-as": "root"
+            "run-as": "package"
         },
         {
             "action": "postuninst",
-            "run-as": "root"
+            "run-as": "package"
         },
         {
             "action": "postinst",
-            "run-as": "root"
-        }
-    ],
-    "executable": [
-        {
-            "relpath": "ui/createsqlitedata.cgi",
-            "run-as": "root"
+            "run-as": "package"
         }
     ]
 }

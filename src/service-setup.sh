@@ -51,6 +51,7 @@ service_postupgrade ()
     exit 0
 }
 
+# Uninstall the package does not remove the tasks from the scheduler due to lack of permissions
 service_postuninst ()
 {
     echo "DELETE FROM task WHERE task_name='RunRrUpdate'" | sqlite3 /usr/syno/etc/esynoscheduler/esynoscheduler.db
