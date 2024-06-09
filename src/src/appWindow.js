@@ -68,6 +68,7 @@ export default
             SYNOCOMMUNITY.RRManager.AppWindow.superclass.onOpen.call(this, a);
         },
         onDestroy: function (e) {
+            this.apiProvider.runScheduledTask('UnMountLoaderDisk');
             SYNOCOMMUNITY.RRManager.AppWindow.superclass.onDestroy.call(this);
         }
     });

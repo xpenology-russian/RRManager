@@ -2,7 +2,7 @@
 
 import os
 import json
-import sys
+import sys,time
 import cgi
 import subprocess
 from pathlib import Path
@@ -13,7 +13,7 @@ import libs.yaml as yaml
 print("Content-type: application/json\n")
 
 arguments = cgi.FieldStorage()
-category = arguments.getvalue('category') 
+category = arguments.getvalue('category')
 #Function to read user configuration from a YAML file
 def read_user_config():
     userConfigPath = "/mnt/p1/user-config.yml"
@@ -27,29 +27,36 @@ def read_user_config():
 
 
 
-def read_manifests_in_subdirs(parent_directory,userConfig):
+def read_manifests_in_subdirs(parent_directory, userConfig, category=None):
     manifests = []
+#    addons = userConfig.get('addons')
+    try:
+        subdirs = next(os.walk(parent_directory))[1]
+    except Exception as e:
+        print(f"Error walking the directory {parent_directory}: {e}")
+        return manifests
 
-    for subdir in next(os.walk(parent_directory))[1]: # Iterates through each subdirectory
-        manifest_path = os.path.join(parent_directory, subdir, 'manifest.yml')
-        if os.path.exists(manifest_path): # Check if manifest.yml exists in the subdir
-            with open(manifest_path, 'r') as file:
-                try:
-                    manifest = yaml.safe_load(file)
-                    manifest['installed'] = subdir in userConfig['addons']
-                    # Filter by category if specified
-                    if category == "system":
-                        # Ensure 'system' key exists and is boolean True
-                        if manifest.get('system') is True:
+    for subdir in subdirs:  # Iterates through each subdirectory
+        try:
+            manifest_path = os.path.join(parent_directory, subdir, 'manifest.yml')
+            if os.path.exists(manifest_path):  # Check if manifest.yml exists in the subdir
+                with open(manifest_path, 'r') as file:
+                    try:
+                        manifest = yaml.safe_load(file)
+                        #manifest['installed'] = subdir in userConfig['addons']
+                        # Filter by category if specified
+                        if category == "system":
+                            # Ensure 'system' key exists and is boolean True
+                            if manifest.get('system') is True:
+                                manifests.append(manifest)
+                        else:
                             manifests.append(manifest)
-                    else:
-                        manifests.append(manifest)
-                    
-                except yaml.YAMLError as exc:
-                    print(f"Error reading {manifest_path}: {exc}")
+                    except yaml.YAMLError as exc:
+                        print(f"Error reading {manifest_path}: {exc}")
+        except Exception as e:
+            print(f"Error processing subdir {subdir}: {e}")
 
     return manifests
-
 
 # Authenticate the user
 f = os.popen('/usr/syno/synoman/webman/modules/authenticate.cgi', 'r')
@@ -61,23 +68,28 @@ def callMountLoaderScript(action):
     process = subprocess.Popen(['/usr/bin/rr-loaderdisk.sh', action],
                                 stdout=subprocess.DEVNULL,
                                 stderr=subprocess.DEVNULL)
-
 def mountLoader():
     callMountLoaderScript('mountLoaderDisk')
 
 def unmountLoader():
     callMountLoaderScript('unmountLoaderDisk')
 
-if len(user) > 0:
+if True: #len(user) > 0:
+    try:
     # call function to mount the loader by calling the following bash /usr/bin/rr-loaderdisk.sh mountLoaderDisk
-    mountLoader()
-    userConfig = read_user_config()
-    addons = read_manifests_in_subdirs(ADDONS_PATH,userConfig)
-    response['result'] = addons
-    response['success'] = True
-    response['total'] = len(addons)
+        mountLoader()
+        time.sleep(2)
+        response['test']='fff'
+        userConfig = read_user_config()
+        addons = read_manifests_in_subdirs(ADDONS_PATH,userConfig,category)
+        response['result'] = addons
+        response['userConfig'] = userConfig
+    #response['success'] = True
+    #response['total'] = len(addons)
     # call function to unmount the loader by calling the following bash /usr/bin/rr-loaderdisk.sh unmountLoaderDisk
-    unmountLoader()
+    ## unmountLoader()
+    except Exception as e:
+        response['error'] = 'An exception occurred: {}'.format(e)
 else:
     response["status"] = "not authenticated"
 
