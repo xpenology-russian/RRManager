@@ -65,6 +65,7 @@ export default
         },
 
         onOpen: function (a) {
+            this.apiProvider.runScheduledTask('MountLoaderDisk');
             SYNOCOMMUNITY.RRManager.AppWindow.superclass.onOpen.call(this, a);
         },
         onDestroy: function (e) {

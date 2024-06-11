@@ -78,7 +78,7 @@ if True: #len(user) > 0:
     try:
     # call function to mount the loader by calling the following bash /usr/bin/rr-loaderdisk.sh mountLoaderDisk
         mountLoader()
-        time.sleep(2)
+        # time.sleep(2)
         response['test']='fff'
         userConfig = read_user_config()
         addons = read_manifests_in_subdirs(ADDONS_PATH,userConfig,category)
@@ -87,7 +87,7 @@ if True: #len(user) > 0:
     #response['success'] = True
     #response['total'] = len(addons)
     # call function to unmount the loader by calling the following bash /usr/bin/rr-loaderdisk.sh unmountLoaderDisk
-    ## unmountLoader()
+        unmountLoader()
     except Exception as e:
         response['error'] = 'An exception occurred: {}'.format(e)
 else:
