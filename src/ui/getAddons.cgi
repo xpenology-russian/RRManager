@@ -29,7 +29,7 @@ def read_user_config():
 
 def read_manifests_in_subdirs(parent_directory, userConfig, category=None):
     manifests = []
-#    addons = userConfig.get('addons')
+    addons = userConfig.get('addons')
     try:
         subdirs = next(os.walk(parent_directory))[1]
     except Exception as e:
@@ -43,7 +43,7 @@ def read_manifests_in_subdirs(parent_directory, userConfig, category=None):
                 with open(manifest_path, 'r') as file:
                     try:
                         manifest = yaml.safe_load(file)
-                        #manifest['installed'] = subdir in userConfig['addons']
+                        manifest['installed'] = subdir in addons #userConfig['addons']
                         # Filter by category if specified
                         if category == "system":
                             # Ensure 'system' key exists and is boolean True
@@ -84,8 +84,8 @@ if True: #len(user) > 0:
         addons = read_manifests_in_subdirs(ADDONS_PATH,userConfig,category)
         response['result'] = addons
         response['userConfig'] = userConfig
-    #response['success'] = True
-    #response['total'] = len(addons)
+        response['success'] = True
+        response['total'] = len(addons)
     # call function to unmount the loader by calling the following bash /usr/bin/rr-loaderdisk.sh unmountLoaderDisk
         unmountLoader()
     except Exception as e:
