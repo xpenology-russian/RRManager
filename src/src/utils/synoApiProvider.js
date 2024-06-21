@@ -1,7 +1,7 @@
 export default
     SYNOCOMMUNITY.RRManager.SynoApiProvider = {
         sendWebAPI: null,
-        _prefix: '/webman/3rdparty/rr-manager/',
+        _prefix: '/webman/3rdparty/rr-manager/webapi/',
         init: function (sendWebAPI, findAppWindow) {
             this.sendWebAPI = sendWebAPI;
         },

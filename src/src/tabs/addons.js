@@ -187,7 +187,7 @@ export default
                 appWindow: this.appWin,
                 restful: true,
                 root: "result",
-                url: `/webman/3rdparty/rr-manager/getAddons.cgi`,
+                url: `/webman/3rdparty/rr-manager/webapi/getAddons.cgi`,
                 idProperty: "name",
                 fields: [{
                     name: 'name',

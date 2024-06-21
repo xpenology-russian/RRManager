@@ -168,7 +168,7 @@ Ext.define("SYNOCOMMUNITY.RRManager.Widget", {
             that.sendWebAPI(args);
         });
     },
-    _prefix: '/webman/3rdparty/rr-manager/',
+    _prefix: '/webman/3rdparty/rr-manager/webapi/',
     callCustomScript: function (scriptName) {
         return new Promise((resolve, reject) => {
             Ext.Ajax.request({

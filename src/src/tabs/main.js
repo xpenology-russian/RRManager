@@ -241,7 +241,7 @@ export default
         },
 
         getConf: function () {
-            return this.apiProvider.callCustomScript('webapi/getConfig.cgi')
+            return this.apiProvider.callCustomScript('getConfig.cgi')
         },
         onDeactive: function () {
             this.panels.healthPanel.fireEvent(

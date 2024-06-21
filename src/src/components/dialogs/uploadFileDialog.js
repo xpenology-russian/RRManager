@@ -314,7 +314,7 @@ export default
                         self.hideProgressIndicator();
                         //helper.unmask(self.owner);
                         // self.owner.getEl()?.unmask();
-                        self.showMsg(self.helper.formatString(self.helper.V('upload_file_dialog', 'unable_update_rr_msg'), responseText?.error ?? "No response from the readUpdateFile.cgi script."));
+                        self.showMsg(self.helper.formatString(self.helper.V('upload_file_dialog', 'unable_update_rr_msg'), responseText?.error ?? "No response from the webapi/readUpdateFile.cgi script."));
                         return;
                     }
                     const configName = 'rrUpdateFileVersion';
