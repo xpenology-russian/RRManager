@@ -1,6 +1,6 @@
 SPK_NAME = rr-manager
 SPK_VERS = 2.0
-SPK_REV = 46
+SPK_REV = 47
 SPK_ICON = src/rr-manager.png
 
 DSM_UI_DIR = ui
@@ -65,19 +65,25 @@ rr-manager_extra_install:
 
 	install -m 755 -d $(STAGING_DIR)/ui/
 	install -m 755 -d $(STAGING_DIR)/ui/libs/
-	install -m 755 src/ui/getConfig.cgi $(STAGING_DIR)/ui/getConfig.cgi
-	install -m 755 src/ui/getNetworkInfo.cgi $(STAGING_DIR)/ui/getNetworkInfo.cgi
-	install -m 755 src/ui/getRrReleaseInfo.cgi $(STAGING_DIR)/ui/getRrReleaseInfo.cgi
+	
+	install -m 755 -d $(STAGING_DIR)/webapi/
+
+	install -m 755 src/webapi/getConfig.cgi $(STAGING_DIR)/webapi/getConfig.cgi
+	install -m 755 src/webapi/getNetworkInfo.cgi $(STAGING_DIR)/webapi/getNetworkInfo.cgi
+	install -m 755 src/webapi/getRrReleaseInfo.cgi $(STAGING_DIR)/webapi/getRrReleaseInfo.cgi
+	install -m 755 src/webapi/getAddons.cgi $(STAGING_DIR)/webapi/getAddons.cgi
+	install -m 755 src/webapi/getModules.cgi $(STAGING_DIR)/webapi/getModules.cgi
+	install -m 755 src/webapi/readUpdateFile.cgi $(STAGING_DIR)/webapi/readUpdateFile.cgi
+	install -m 755 src/webapi/uploadConfigFile.cgi $(STAGING_DIR)/webapi/uploadConfigFile.cgi
+	install -m 755 src/webapi/checkUpdateStatus.cgi $(STAGING_DIR)/webapi/checkUpdateStatus.cgi
+	install -m 755 src/webapi/getAvailableUpdates.cgi $(STAGING_DIR)/webapi/getAvailableUpdates.cgi
+	install -m 755 src/webapi/uploadUpdateFileInfo.cgi $(STAGING_DIR)/webapi/uploadUpdateFileInfo.cgi
+	install -m 755 src/webapi/rr-manager.api $(STAGING_DIR)/webapi/rr-manager.api
+	install -m 755 src/webapi/rr-manager.auth $(STAGING_DIR)/webapi/rr-manager.auth
+	
+
 	install -m 755 src/ui/config.txt $(STAGING_DIR)/ui/config.txt
 	install -m 755 src/ui/style.css $(STAGING_DIR)/ui/style.css
-	install -m 755 src/ui/getAddons.cgi $(STAGING_DIR)/ui/getAddons.cgi
-	install -m 755 src/ui/getModules.cgi $(STAGING_DIR)/ui/getModules.cgi
-	install -m 755 src/ui/readUpdateFile.cgi $(STAGING_DIR)/ui/readUpdateFile.cgi
-	install -m 755 src/ui/uploadConfigFile.cgi $(STAGING_DIR)/ui/uploadConfigFile.cgi
-	install -m 755 src/ui/checkUpdateStatus.cgi $(STAGING_DIR)/ui/checkUpdateStatus.cgi
-	install -m 755 src/ui/getAvailableUpdates.cgi $(STAGING_DIR)/ui/getAvailableUpdates.cgi
-	install -m 755 src/ui/uploadUpdateFileInfo.cgi $(STAGING_DIR)/ui/uploadUpdateFileInfo.cgi
-
 	install -m 755 src/ui/tasks.sql $(STAGING_DIR)/ui/tasks.sql
 	install -m 755 src/ui/install.sh $(STAGING_DIR)/ui/install.sh
 

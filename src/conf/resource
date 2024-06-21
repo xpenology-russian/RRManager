@@ -27,13 +27,42 @@
       }
     ]
   },
-	"data-share": {
-		"shares": [
-			{
-				"name": "{{wizard_download_share}}", 
-				"permission":{"rw":["sc-rr-manager"]},
-				"once": true
-			}
-		]
-	}
+  "data-share": {
+    "shares": [
+      {
+        "name": "{{wizard_download_share}}",
+        "permission": {
+          "rw": [
+            "sc-rr-manager"
+          ]
+        },
+        "once": true
+      }
+    ]
+  },
+  "webapi-desc": {
+    "apis": [
+      {
+        "api-dir": "webapi",
+        "auth": [
+          "webapi/rr-manager.auth"
+        ],
+        "lib": [
+          "webapi/rr-manager.api"
+        ],
+        "link-name": "RRManager",
+        "type": "cgi"
+      }      
+    ]
+  },
+  "indexdb": {
+    "app-index": {
+        "conf-relpath": "ui/index.conf",
+        "db-relpath": "indexdb/appindexdb"
+    },
+    "help-index": {
+        "conf-relpath": "ui/helptoc.conf",
+        "db-relpath": "indexdb/helpindexdb"
+    }
+},
 }

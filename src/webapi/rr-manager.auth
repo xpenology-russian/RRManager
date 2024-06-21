@@ -1,0 +1,10 @@
+{
+    "allow_user": [
+        "admin",
+        "local"
+    ],
+    "ip_checking": false,
+    "name": "RRManager",
+    "privilege": "SYNOCOMMUNITY.RRManager.Application",
+    "timeout": -2
+}
