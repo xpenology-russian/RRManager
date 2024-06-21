@@ -65,7 +65,7 @@ ADDONS_PATH = '/mnt/p3/addons/'
 response = {}
 
 def callMountLoaderScript(action):
-    process = subprocess.Popen(['/usr/bin/rr-loaderdisk.sh', action],
+    process = subprocess.run(['/usr/bin/rr-loaderdisk.sh', action],
                                 stdout=subprocess.DEVNULL,
                                 stderr=subprocess.DEVNULL)
 def mountLoader():
