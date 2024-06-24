@@ -18,7 +18,7 @@ service_postinst ()
 
     echo ${separator}
     echo "Install packages to the app/libs folder"
-    ${SYNOPKG_PKGDEST}/env/bin/pip install --target ${SYNOPKG_PKGDEST}/ui/libs/ -r ${SYNOPKG_PKGDEST}/share/wheelhouse/requirements.txt
+    ${SYNOPKG_PKGDEST}/env/bin/pip install --target ${SYNOPKG_PKGDEST}/ui/webapi/libs/ -r ${SYNOPKG_PKGDEST}/share/wheelhouse/requirements.txt
 
     echo ${separator}
      if [ "${SYNOPKG_PKG_STATUS}" == "INSTALL" ]; then
