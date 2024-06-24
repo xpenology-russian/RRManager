@@ -8,7 +8,7 @@ import cgi
 from http import cookies
 from pathlib import Path
 path_root = Path(__file__).parents[1]
-sys.path.append(str(path_root)+'/libs')
+sys.path.append(str(path_root)+'/../libs')
 
 import libs.yaml as yaml
 print("Content-type: application/json\n")
