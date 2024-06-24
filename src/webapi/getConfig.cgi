@@ -65,7 +65,7 @@ def read_rr_awaiting_update(fileName):
         return "healthy"
 
 def callMountLoaderScript(action):
-    process = subprocess.run(['/usr/bin/rr-loaderdisk.sh', action],
+    process = subprocess.run(['sudo','/usr/bin/rr-loaderdisk.sh', action],
                                 stdout=subprocess.DEVNULL,
                                 stderr=subprocess.DEVNULL)
 

@@ -52,17 +52,17 @@
         ],
         "link-name": "RRManager",
         "type": "cgi"
-      }      
+      }
     ]
   },
   "indexdb": {
     "app-index": {
-        "conf-relpath": "ui/index.conf",
-        "db-relpath": "indexdb/appindexdb"
+      "conf-relpath": "ui/index.conf",
+      "db-relpath": "indexdb/appindexdb"
     },
     "help-index": {
-        "conf-relpath": "ui/helptoc.conf",
-        "db-relpath": "indexdb/helpindexdb"
+      "conf-relpath": "ui/helptoc.conf",
+      "db-relpath": "indexdb/helpindexdb"
     }
-},
+  }
 }
