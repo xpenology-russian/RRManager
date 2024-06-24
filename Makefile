@@ -1,6 +1,6 @@
 SPK_NAME = rr-manager
 SPK_VERS = 2.0
-SPK_REV = 50
+SPK_REV = 51
 SPK_ICON = src/rr-manager.png
 
 DSM_UI_DIR = ui
@@ -64,22 +64,21 @@ rr-manager_extra_install:
 	install -m 644 src/requirements.txt $(STAGING_DIR)/share/wheelhouse/requirements.txt
 
 	install -m 755 -d $(STAGING_DIR)/ui/
-	install -m 755 -d $(STAGING_DIR)/ui/libs/
-	
-	install -m 755 -d $(STAGING_DIR)/webapi/
+	install -m 755 -d $(STAGING_DIR)/ui/libs/	
+	install -m 755 -d $(STAGING_DIR)/ui/webapi/
 
-	install -m 755 src/webapi/getConfig.cgi $(STAGING_DIR)/webapi/getConfig.cgi
-	install -m 755 src/webapi/getNetworkInfo.cgi $(STAGING_DIR)/webapi/getNetworkInfo.cgi
-	install -m 755 src/webapi/getRrReleaseInfo.cgi $(STAGING_DIR)/webapi/getRrReleaseInfo.cgi
-	install -m 755 src/webapi/getAddons.cgi $(STAGING_DIR)/webapi/getAddons.cgi
-	install -m 755 src/webapi/getModules.cgi $(STAGING_DIR)/webapi/getModules.cgi
-	install -m 755 src/webapi/readUpdateFile.cgi $(STAGING_DIR)/webapi/readUpdateFile.cgi
-	install -m 755 src/webapi/uploadConfigFile.cgi $(STAGING_DIR)/webapi/uploadConfigFile.cgi
-	install -m 755 src/webapi/checkUpdateStatus.cgi $(STAGING_DIR)/webapi/checkUpdateStatus.cgi
-	install -m 755 src/webapi/getAvailableUpdates.cgi $(STAGING_DIR)/webapi/getAvailableUpdates.cgi
-	install -m 755 src/webapi/uploadUpdateFileInfo.cgi $(STAGING_DIR)/webapi/uploadUpdateFileInfo.cgi
-	install -m 755 src/webapi/rr-manager.api $(STAGING_DIR)/webapi/rr-manager.api
-	install -m 755 src/webapi/rr-manager.auth $(STAGING_DIR)/webapi/rr-manager.auth
+	install -m 755 src/webapi/getConfig.cgi $(STAGING_DIR)/ui/webapi/getConfig.cgi
+	install -m 755 src/webapi/getNetworkInfo.cgi $(STAGING_DIR)/ui/webapi/getNetworkInfo.cgi
+	install -m 755 src/webapi/getRrReleaseInfo.cgi $(STAGING_DIR)/ui/webapi/getRrReleaseInfo.cgi
+	install -m 755 src/webapi/getAddons.cgi $(STAGING_DIR)/ui/webapi/getAddons.cgi
+	install -m 755 src/webapi/getModules.cgi $(STAGING_DIR)/ui/webapi/getModules.cgi
+	install -m 755 src/webapi/readUpdateFile.cgi $(STAGING_DIR)/ui/webapi/readUpdateFile.cgi
+	install -m 755 src/webapi/uploadConfigFile.cgi $(STAGING_DIR)/ui/webapi/uploadConfigFile.cgi
+	install -m 755 src/webapi/checkUpdateStatus.cgi $(STAGING_DIR)/ui/webapi/checkUpdateStatus.cgi
+	install -m 755 src/webapi/getAvailableUpdates.cgi $(STAGING_DIR)/ui/webapi/getAvailableUpdates.cgi
+	install -m 755 src/webapi/uploadUpdateFileInfo.cgi $(STAGING_DIR)/ui/webapi/uploadUpdateFileInfo.cgi
+	# install -m 755 src/webapi/rr-manager.api $(STAGING_DIR)/ui/webapi/rr-manager.api
+	# install -m 755 src/webapi/rr-manager.auth $(STAGING_DIR)/ui/webapi/rr-manager.auth
 	
 
 	install -m 755 src/ui/config.txt $(STAGING_DIR)/ui/config.txt
