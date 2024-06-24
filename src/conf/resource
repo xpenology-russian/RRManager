@@ -40,21 +40,6 @@
       }
     ]
   },
-  "webapi-desc": {
-    "apis": [
-      {
-        "api-dir": "webapi",
-        "auth": [
-          "webapi/rr-manager.auth"
-        ],
-        "lib": [
-          "webapi/rr-manager.api"
-        ],
-        "link-name": "RRManager",
-        "type": "cgi"
-      }
-    ]
-  },
   "indexdb": {
     "app-index": {
       "conf-relpath": "ui/index.conf",
