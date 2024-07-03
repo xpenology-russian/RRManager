@@ -42,6 +42,10 @@ export default
                     appWin: e.appWin,
                     owner: this,
                 }),
+                statusBoxsPanel: new SYNOCOMMUNITY.RRManager.Overview.StatusBoxsPanel({
+                    appWin: e.appWin,
+                    owner: this
+                }),
             };
             const t = {
                 layout: "vbox",
@@ -177,9 +181,13 @@ export default
                     self.systemInfoTxt = `Model: ${systemInfo?.model}, RAM: ${systemInfo?.ram} MB, DSM version: ${systemInfo?.version_string} `;
                     const rrManagerPackage = packages.packages.find((packageInfo) => packageInfo.id == 'rr-manager');
                     self.rrManagerVersionText = `🛡️RR Manager v.: ${rrManagerPackage?.version}`;
-                    self.panels.healthPanel.fireEvent(
+                    self.panels?.healthPanel?.fireEvent(
                         "select",
-                        self.panels.healthPanel.clickedBox
+                        self.panels?.healthPanel?.clickedBox
+                    );
+                    self.panels.statusBoxsPanel.fireEvent(
+                        "select",
+                        self.panels.statusBoxsPanel.clickedBox
                     );
                     await self.updateAllForm();
                     self.rrVersionText = self.rrConfig.rr_version;
@@ -193,7 +201,8 @@ export default
                         });
                         self.installed = true;
                     }
-                    self.panels.healthPanel.fireEvent("data_ready");
+                    self.panels?.healthPanel?.fireEvent("data_ready");
+                    self.panels?.statusBoxsPanel?.fireEvent("data_ready");
                     self.loaded = true;
                 }
 
@@ -244,9 +253,9 @@ export default
             return this.apiProvider.callCustomScript('getConfig.cgi')
         },
         onDeactive: function () {
-            this.panels.healthPanel.fireEvent(
+            this.panels?.healthPanel?.fireEvent(
                 "deactivate",
-                this.panels.healthPanel.clickedBox
+                this.panels?.healthPanel?.clickedBox
             );
 
         },

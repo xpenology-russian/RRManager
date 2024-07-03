@@ -58,16 +58,17 @@ export default
             return Ext.apply(panelConfig, e), panelConfig;
         },
         onSelectChange: function (e) {
-            (this.clickedBox = e),
-                Ext.each(this.statusBoxs, (e) => {
-                    e.fireEvent("update");
-                }),
-                this.owner.panels.detailPanel.fireEvent("select", e);
+            console.log("--onSelectChange StatusBoxsPanel")
+            // (this.clickedBox = e),
+            //     Ext.each(this.statusBoxs, (e) => {
+            //         e.fireEvent("update");
+            //     }),
+            //     this.owner.panels.detailPanel.fireEvent("select", e);
         },
 
         onDataReady: function () {
             console.log("--onDataReady3")
-            Ext.each(this.statusBoxs, (e) => {
+            Ext.each(this.statusBoxes, (e) => {
                 e.fireEvent("data_ready");
             });
         },

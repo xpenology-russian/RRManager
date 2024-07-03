@@ -4,6 +4,10 @@ import AppWindow from './appWindow';
 import Main from './tabs/main';
 import HealthPanel from './panels/healthPanel';
 
+import statusBoxTmpl from './components/statusBoxTmpl';
+import statusBox from './components/statusBox';
+import StatusBoxsPanel from './panels/statusBoxsPanel';
+
 //tab addons
 import Addons from './tabs/addons';
 import AdvancedSearchField from './components/advancedSearchField';

@@ -3,10 +3,10 @@ export default
         extend: "SYNO.ux.Panel",
         constructor: function (e) {
             this.callParent([this.fillConfig(e)]);
-        },
+        },   
         fillConfig: function (e) {
             (this.appWin = e.appWin),
-                (this.tpl = new SYNOCOMMUNITY.RRManager.Overview.StatusBoxTmpl());
+                (this.tpl = new SYNOCOMMUNITY.RRManager.Overview.StatusBoxTmpl);
             const t = {
                 items: [
                     {
@@ -37,9 +37,10 @@ export default
                         clickType:
                             this.owner.clickedBox === this.type ? "click" : "unclick",
                         errorlevel: this.errorlevel,
-                        total:
-                            this.data.total ||
-                            this.data.error + this.data.warning + this.data.healthy,
+                        total: this.data.icon,
+                        version: "2.0.59"
+                            // this.data.total ||
+                            // this.data.error + this.data.warning + this.data.healthy,
                     },
                     this.data
                 )
@@ -83,24 +84,18 @@ export default
                 );
         },
         processLUNSummary: function () {
-            const e = this,
-                t = e.appWin.iscsiLuns.getAll();
-            Ext.each(
-                t,
-                function (t) {
-                    let i = "healthy";
-                    t.isSummaryCrashed(
-                        this.appWin.volumes,
-                        this.appWin.pools,
-                        this.appWin.isLowCapacityWriteEnable()
-                    )
-                        ? (i = "error")
-                        : t.isSummaryWarning(this.appWin.volumes, this.appWin.pools) &&
-                        (i = "warning"),
-                        e.data[i]++;
-                },
-                e
-            );
+            const luns = [1,2]; //this.appWin.iscsiLuns.getAll();
+            Ext.each(luns, function(lun) {
+                let status = "healthy";
+                // if (lun.isSummaryCrashed(this.appWin.volumes, this.appWin.pools, this.appWin.isLowCapacityWriteEnable())) {
+                //     status = "error";
+                // } else if (lun.isSummaryWarning(this.appWin.volumes, this.appWin.pools)) {
+                //     status = "warning";
+                // }
+                this.data[status]++;
+               
+            }, this);
+            this.data.icon = "💊";
         },
         processEventSummary: function () {
             const e = this.appWin.summary;
@@ -113,17 +108,17 @@ export default
             switch (
             ((this.data = { error: 0, warning: 0, healthy: 0 }), this.storeKey)
             ) {
-                case "fc_target_summ":
-                    this.processFCTrgSummary();
-                    break;
-                case "target_summ":
-                    this.processTrgSummary();
-                    break;
+                // case "fc_target_summ":
+                //     this.processFCTrgSummary();
+                //     break;
+                // case "target_summ":
+                //     this.processTrgSummary();
+                //     break;
                 case "lun_summ":
                     this.processLUNSummary();
                     break;
-                case "event_summ":
-                    this.processEventSummary();
+                // case "event_summ":
+                //     this.processEventSummary();
             }
             this.data.error
                 ? (this.errorlevel = "error")
