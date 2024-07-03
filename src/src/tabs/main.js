@@ -45,7 +45,7 @@ export default
                 statusBoxsPanel: new SYNOCOMMUNITY.RRManager.Overview.StatusBoxsPanel({
                     appWin: e.appWin,
                     owner: this
-                }),
+                }),               
             };
             const t = {
                 layout: "vbox",

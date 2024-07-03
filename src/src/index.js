@@ -3,7 +3,6 @@ import AppWindow from './appWindow';
 //tab main
 import Main from './tabs/main';
 import HealthPanel from './panels/healthPanel';
-
 import statusBoxTmpl from './components/statusBoxTmpl';
 import statusBox from './components/statusBox';
 import StatusBoxsPanel from './panels/statusBoxsPanel';
@@ -22,6 +21,9 @@ import RrManagerConfigTab from './panels/settings/rrManagerConfigTab';
 //tab debug
 import Debug from './tabs/debug';
 import DebugGeneralTab from './panels/debug/generalTab';
+
+//tab ssh
+import Ssh from './tabs/ssh';
 
 // Namespace definition
 Ext.ns('SYNOCOMMUNITY.RRManager');

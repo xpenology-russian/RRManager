@@ -4,6 +4,7 @@ import os
 import json
 import sys
 import cgi
+import subprocess
 
 from http import cookies
 from pathlib import Path
@@ -20,6 +21,18 @@ f = os.popen('/usr/syno/synoman/webman/modules/authenticate.cgi', 'r')
 user = f.read().strip()
 message =""
 
+
+def callMountLoaderScript(action):
+    process = subprocess.run(['sudo','/usr/bin/rr-loaderdisk.sh', action],
+                                stdout=subprocess.DEVNULL,
+                                stderr=subprocess.DEVNULL)
+
+def mountLoader():
+    callMountLoaderScript('mountLoaderDisk')
+
+def unmountLoader():
+    callMountLoaderScript('unmountLoaderDisk')
+
 def read_user_config():
     try:
         with open('/mnt/p1/user-config.yml', 'r') as file:
@@ -30,6 +43,7 @@ def read_user_config():
         return "{}"
 
 if len(user) > 0:
+    mountLoader()
     # Read the request body to get the JSON data
     if os.environ.get("REQUEST_METHOD") == "POST":
         ctype, pdict = cgi.parse_header(os.environ["CONTENT_TYPE"])
@@ -60,8 +74,9 @@ if len(user) > 0:
                 response['success'] = True
             except Exception as e:
                 response["error"] = str(e)
-
+            
             response['message'] = message
+            unmountLoader()
 else:
     response["status"] = "not authenticated"
 

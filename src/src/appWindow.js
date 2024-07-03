@@ -61,6 +61,12 @@ export default
                     fn: "SYNOCOMMUNITY.RRManager.Debug.Main",
                     // help: "setting.html",
                 },
+                {
+                    text: 'SSH',
+                    iconCls: "icon-ssh",
+                    fn: "SYNOCOMMUNITY.RRManager.Ssh.Main",
+                    // help: "setting.html",
+                }                
             ];
         },
 

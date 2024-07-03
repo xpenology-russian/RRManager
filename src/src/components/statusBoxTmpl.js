@@ -32,7 +32,6 @@ export default
         },
         isBothErrorWarn: (error, warning) => error !== 0 && warning !== 0,
         showNumber: (number) => {
-            debugger;
             return number;        
         },
 
