@@ -62,7 +62,7 @@ export default
                     // help: "setting.html",
                 },
                 {
-                    text: 'SSH',
+                    text: 'Console',
                     iconCls: "icon-ssh",
                     fn: "SYNOCOMMUNITY.RRManager.Ssh.Main",
                     // help: "setting.html",
