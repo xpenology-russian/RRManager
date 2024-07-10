@@ -23,7 +23,8 @@
     "@babel/preset-env": "^7.24.4",
     "terser-webpack-plugin": "^5.3.10",
     "webpack": "^5.90.3",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "cross-env": "^7.0.3"
   },
   "dependencies": {
     "@xterm/addon-attach": "^0.11.0",
@@ -33,6 +34,12 @@
     "@xterm/addon-unicode11": "^0.7.0",
     "@xterm/addon-web-links": "^0.10.0",
     "@xterm/addon-webgl": "^0.17.0",
-    "@xterm/xterm": "^5.4.0"
+    "@xterm/xterm": "^5.4.0",
+    "decko": "^1.2.0",
+    "file-saver": "^2.0.5",
+    "preact": "^10.19.6",
+    "trzsz": "^1.1.5",
+    "whatwg-fetch": "^3.6.20",
+    "zmodem.js": "^0.1.10"  
   }
 }
