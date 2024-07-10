@@ -3,10 +3,15 @@ export default
         extend: "SYNO.ux.Panel",
         constructor: function (e) {
             this.callParent([this.fillConfig(e)]);
-        },   
+        },
         fillConfig: function (e) {
             (this.appWin = e.appWin),
-                (this.tpl = new SYNOCOMMUNITY.RRManager.Overview.StatusBoxTmpl);
+                (this.data = e.data),
+                (this.tpl = new SYNOCOMMUNITY.RRManager.Overview.StatusBoxTmpl({
+                    type: e.type,
+                    title: e.title,
+                    data: this.data,
+                }));
             const t = {
                 items: [
                     {
@@ -16,6 +21,7 @@ export default
                         html: "",
                     },
                 ],
+                data: this.data,
                 listeners: {
                     scope: this,
                     afterrender: this.onAfterRender,
@@ -37,94 +43,53 @@ export default
                         clickType:
                             this.owner.clickedBox === this.type ? "click" : "unclick",
                         errorlevel: this.errorlevel,
-                        total: this.data.icon,
-                        version: "2.0.59"
-                            // this.data.total ||
-                            // this.data.error + this.data.warning + this.data.healthy,
+                        total: this?.data?.icon,
+                        error: 0,
+                        warning: 0,
                     },
-                    this.data
+                    this.tpl.data
                 )
             );
         },
         onMouseClick: function () {
             this.owner.fireEvent("selectchange", this.type);
         },
-        processFCTrgSummary: function () {
-            const self = this;
-            const targets = self.appWin.fcTargets.getAll();
-            self.data.total = 0;
-            Ext.each(
-                targets,
-                (target) => {
-                    self.data.total++;
-                    if ("connected" === target.get("status")) {
-                        self.data.healthy++;
-                    } else if (target.get("is_enabled") || target.get("status") !== false) {
-                        self.data.warning++;
-                    }
-                },
-                self
-            );
-        },
-        processTrgSummary: function () {
-            const e = this,
-                t = e.appWin.iscsiTargets.getAll();
-            (e.data.total = 0),
-                Ext.each(
-                    t,
-                    (t) => {
-                        e.data.total++,
-                            "connected" === t.get("status")
-                                ? e.data.healthy++
-                                : t.get("is_enabled") &&
-                                "offline" === t.get("status") &&
-                                e.data.warning++;
-                    },
-                    e
-                );
-        },
-        processLUNSummary: function () {
-            const luns = [1,2]; //this.appWin.iscsiLuns.getAll();
-            Ext.each(luns, function(lun) {
+        processRRSummary: function () {
+            const luns = [1, 2];
+            Ext.each(luns, function (lun) {
                 let status = "healthy";
-                // if (lun.isSummaryCrashed(this.appWin.volumes, this.appWin.pools, this.appWin.isLowCapacityWriteEnable())) {
-                //     status = "error";
-                // } else if (lun.isSummaryWarning(this.appWin.volumes, this.appWin.pools)) {
-                //     status = "warning";
-                // }
                 this.data[status]++;
-               
             }, this);
-            this.data.icon = "💊";
         },
-        processEventSummary: function () {
-            const e = this.appWin.summary;
-            (this.data.warning = e.warn_count ? e.warn_count : 0),
-                (this.data.error = e.error_count ? e.error_count : 0),
-                (this.data.healthy = e.info_count ? e.info_count : 0);
+        //HW info
+        processHWSummary: function () {
+            const luns = [1, 2];
+            Ext.each(luns, function (lun) {
+                let status = "healthy";
+                this.data[status]++;
+            }, this);
+        },
+        processRRMSummary: function () {
+            const luns = [1, 2];
+            Ext.each(luns, function (lun) {
+                let status = "healthy";
+                this.data[status]++;
+            }, this);
         },
         onDataReady: function () {
-            console.log("--onDataReady2")
-            switch (
-            ((this.data = { error: 0, warning: 0, healthy: 0 }), this.storeKey)
-            ) {
-                // case "fc_target_summ":
-                //     this.processFCTrgSummary();
-                //     break;
-                // case "target_summ":
-                //     this.processTrgSummary();
-                //     break;
-                case "lun_summ":
-                    this.processLUNSummary();
+            this.data = { error: 0, warning: 0, healthy: 0 };
+            Ext.apply(this.data, this.tpl.data);
+            switch (this.storeKey) {
+                case "hwinfo_summ":
+                    this.processHWSummary();
                     break;
-                // case "event_summ":
-                //     this.processEventSummary();
+                case "rrinfo_summ":
+                    this.processRRSummary();
+                    break;
+                case "rrminfo_summ":
+                    this.processRRMSummary();
             }
-            this.data.error
-                ? (this.errorlevel = "error")
-                : this.data.warning
-                    ? (this.errorlevel = "warning")
-                    : (this.errorlevel = "healthy"),
-                this.updateTpl();
+            this.data.errorlevel = "healthy";
+            this.updateTpl();
         },
     });

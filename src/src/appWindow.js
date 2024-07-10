@@ -71,11 +71,19 @@ export default
         },
 
         onOpen: function (a) {
+            //Apply style to the main page
+            const t = this;
+            t.mon(t.getPageList().getSelectionModel(), "selectionchange", t.onSelectionModelChange, t);
             //this.apiProvider.runScheduledTask('MountLoaderDisk');
             SYNOCOMMUNITY.RRManager.AppWindow.superclass.onOpen.call(this, a);
         },
         onDestroy: function (e) {
             //this.apiProvider.runScheduledTask('UnMountLoaderDisk');
             SYNOCOMMUNITY.RRManager.AppWindow.superclass.onDestroy.call(this);
-        }
+        },
+        onSelectionModelChange: function() {
+            const e = this
+              , t = e.getActivePage();
+            t && ("SYNOCOMMUNITY.RRManager.Overview.Main" === t.itemId ? e.getPageCt().addClass("iscsi-overview-panel") : e.getPageCt().removeClass("iscsi-overview-panel"))
+        },
     });

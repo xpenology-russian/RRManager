@@ -8,31 +8,41 @@ export default
             });
         },
         constructor: function (e) {
-            const t = this.createTpl();
+            let t = "";
+            switch (e.type) {
+                case 'hw_info':
+                    t = this.createTplHwInfo();
+                    break;
+                case 'rr_info':
+                    t = this.createTplRrInfo();
+                    break;
+                case 'rrm_info':
+                    t = this.createTplRrmInfo();
+                    break;
+            }
             t.push(this.fillConfig(e)),
                 this.callParent(t);
         },
 
-        getTranslate: (key)=>{
+        getTranslate: (key) => {
             const translations = {
-                'lun': 'RR version',
-                'target': 'RR Manager version',
-                'fctarget': 'FCTarget',
-                'event': 'RR Actions',
+                'hw_info': 'HW info',
+                'rr_info': 'RR version',
+                'rrm_info': 'RR Manager version',
             };
             return translations[key];
         },
         getStatusText: (type, status) => {
             const statusTexts = {
-                'lun': 'RR version',
-                'target': 'RR Manager version',            
-                'event': 'RR Actions'
+                'hw_info': 'RR version',
+                'rr_info': 'RR Manager version',
+                'rrm_info': 'RR Actions'
             };
             return statusTexts[type];
         },
         isBothErrorWarn: (error, warning) => error !== 0 && warning !== 0,
         showNumber: (number) => {
-            return number;        
+            return number;
         },
 
         fillConfig: function (e) {
@@ -57,13 +67,13 @@ export default
                 Ext.apply(templateConfig, e)
             );
         },
-        createTpl: function () {
+        createTplHwInfo: function () {
             return [
                 '<div class="iscsi-overview-statusbox iscsi-overview-statusbox-{type} iscsi-overview-statusbox-{errorlevel} iscsi-overview-statusbox-{clickType}">',
                 '<div class="statusbox-titlebar"></div>',
                 '<div class="statusbox-box">',
                 '<div class="statusbox-title">',
-                "<h3>{[ this.getTranslate(values.type) ]}</h3>",
+                "<h3>{[ values.title ]} </h3>",
                 "</div>",
                 '<div class="statusbox-title-right">',
                 "<h3>{[ this.showNumber(values.total) ]}</h3>",
@@ -71,20 +81,63 @@ export default
                 '<div class="x-clear"></div>',
                 '<div class="statusbox-title-padding">',
                 "</div>",
-                // '<tpl if="this.isBothErrorWarn(error, warning)">',
-                // '<div class="statusbox-halfblock-left statusbox-block-error">',
-                // '<div class="statusbox-number">{[ this.showNumber(values.error) ]}</div>',
-                // '<div class="statusbox-text" ext:qtip="{[ this.getStatusText(values.type, "error") ]}">{[ this.getStatusText(values.type, "error") ]}</div>',
-                // "</div>",
-                // '<div class="statusbox-halfblock-right statusbox-block-warning">',
-                // '<div class="statusbox-number">{[ this.showNumber(values.warning) ]}</div>',
-                // '<div class="statusbox-text" ext:qtip="{[ this.getStatusText(values.type, "warning") ]}">{[ this.getStatusText(values.type, "warning") ]}</div>',
-                // "</div>",
-                // "</tpl>",
                 '<tpl if="! this.isBothErrorWarn(error, warning)">',
                 '<div class="statusbox-block statusbox-block-{errorlevel}">',
-                '<div class="statusbox-number">{[ this.showNumber(values.version) ]}</div>',
-                '<div class="statusbox-text" ext:qtip="{[ this.getStatusText(values.type, values.errorlevel) ]}">{[ this.getStatusText(values.type, values.errorlevel) ]}</div>',
+                '</div>',
+                '<div class="statusbox-text" ext:qtip="{[ values.text ]}">{[ values.text ]}</div>',
+                '<div class="statusbox-text" ext:qtip="{[ values.text2 ]}">{[ values.text2 ]}</div>',
+                '<div class="statusbox-text" ext:qtip="{[ values.text3 ]}">{[ values.text3 ]}</div>',
+                "</div>",
+                "</tpl>",
+                "</div>",
+                "</div>",
+            ];
+        },
+        createTplRrInfo: function () {
+            return [
+                '<div class="iscsi-overview-statusbox iscsi-overview-statusbox-{type} iscsi-overview-statusbox-{errorlevel} iscsi-overview-statusbox-{clickType}">',
+                '<div class="statusbox-titlebar"></div>',
+                '<div class="statusbox-box">',
+                '<div class="statusbox-title">',
+                "<h3>{[ values.title ]} </h3>",
+                "</div>",
+                '<div class="statusbox-title-right">',
+                "<h3>{[ this.showNumber(values.total) ]}</h3>",
+
+                "</div>",
+                '<div class="x-clear"></div>',
+                '<div class="statusbox-title-padding">',
+                "</div>",
+                '<tpl if="! this.isBothErrorWarn(error, warning)">',
+                '<div class="statusbox-block statusbox-block-{errorlevel}">',
+                '<div class="statusbox-number">{[ values.rrVersion ]}',
+                '</div>',
+                '<div class="statusbox-text" ext:qtip="{[ values.rrVersion ]}">{[ values.rrVersion ]}</div>',
+                "</div>",
+                "</tpl>",
+                "</div>",
+                "</div>",
+            ];
+        },
+        createTplRrmInfo: function () {
+            return [
+                '<div class="iscsi-overview-statusbox iscsi-overview-statusbox-{type} iscsi-overview-statusbox-{errorlevel} iscsi-overview-statusbox-{clickType}">',
+                '<div class="statusbox-titlebar"></div>',
+                '<div class="statusbox-box">',
+                '<div class="statusbox-title">',
+                "<h3>{[ values.title ]} </h3>",
+                "</div>",
+                '<div class="statusbox-title-right">',
+                "<h3>{[ this.showNumber(values.total) ]}</h3>",
+                "</div>",
+                '<div class="x-clear"></div>',
+                '<div class="statusbox-title-padding">',
+                "</div>",
+                '<tpl if="! this.isBothErrorWarn(error, warning)">',
+                '<div class="statusbox-block statusbox-block-{errorlevel}">',
+                '<div class="statusbox-number">{[ values.rrManagerVersion ]}',
+                '</div>',
+                '<div class="statusbox-text" ext:qtip="{[ values.rrManagerVersion ]}">{[ values.rrManagerVersion ]}</div>',
                 "</div>",
                 "</tpl>",
                 "</div>",

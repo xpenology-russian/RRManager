@@ -1,49 +1,76 @@
 export default
     Ext.define("SYNOCOMMUNITY.RRManager.Overview.StatusBoxsPanel", {
         extend: "SYNO.ux.Panel",
+        apiProvider: SYNOCOMMUNITY.RRManager.SynoApiProvider,
         constructor: function (e) {
+            this.appWin = e.appWin;
+            this.owner = e.owner;
+            this.helper = e.owner.helper;
+            this.data = {};
+            this.apiProvider.init(this);
             this.callParent([this.fillConfig(e)]);
+        },
+        onDataReady: function (data) {
+            this.loadData(data);
+            Ext.each(this.statusBoxes, (e) => {
+                e.fireEvent("data_ready");
+            });
+
+            this.owner.fireEvent("data_ready");
         },
         fillConfig: function (e) {
             const statusBoxConfig = { owner: this, appWin: e.appWin, flex: 1 };
-            this.selectedBox = "lun";
+            this.selectedBox = "hw_info";
             this.statusBoxes = [
                 new SYNOCOMMUNITY.RRManager.Overview.StatusBox(
-                    Ext.apply({ type: "lun", title: "LUN", storeKey: "lun_summ" }, statusBoxConfig)
-                ),
+                    Ext.apply({
+                        type: "hw_info", title: "HW Info", storeKey: "hwinfo_summ",
+                        data: {
+                            title: "HW Info",
+                            icon: "🖥️",
+                            text: this?.data?.systemInfoTxt ?? "--",
+                            text2: this?.data?.systemInfoTxt ?? "--",
+                            text3: this?.data?.systemInfoTxt ?? "--",
+                            error: 0,
+                            warning: 0,
+                            healthy: 2,
+                            type: "healthy"
+                        }
+                    }, statusBoxConfig)),
                 new SYNO.ux.Panel({ width: 10 }),
+
                 new SYNOCOMMUNITY.RRManager.Overview.StatusBox(
-                    Ext.apply(
-                        { type: "target", title: "Target", storeKey: "target_summ" },
-                        statusBoxConfig
-                    )
+                    Ext.apply({
+                        type: "rr_info", title: "RR version", storeKey: "rrinfo_summ",
+                        data: {
+                            title: "RR version",
+                            icon: "💊",
+                            text: "This is some long text RR",
+                            version: this?.data?.rrVersion ?? "--",
+                            error: 0,
+                            warning: 0,
+                            type: "healthy"
+                        }
+                    }, statusBoxConfig),
                 ),
                 new SYNO.ux.Panel({ width: 10 }),
+
                 new SYNOCOMMUNITY.RRManager.Overview.StatusBox(
                     Ext.apply(
                         {
-                            type: "fctarget",
-                            title: "FCTarget",
-                            storeKey: "fc_target_summ",
-                        },
-                        statusBoxConfig
-                    )
-                ),
-                new SYNO.ux.Panel({ width: 10 }),
-                new SYNOCOMMUNITY.RRManager.Overview.StatusBox(
-                    Ext.apply(
-                        {
-                            type: "event",
-                            title: "Events",
-                            storeKey: "event_summ",
-                        },
-                        statusBoxConfig
-                    )
+                            type: "rrm_info", title: "RR Manager", storeKey: "rrminfo_summ",
+                            data: {
+                                title: "RR Manager",
+                                icon: "🛡️",
+                                text: "This is some long text RR Manager",
+                                version: this?.data?.rrManagerVersion ?? "--",
+                                error: 0,
+                                warning: 0,
+                                type: "healthy"
+                            }
+                        }, statusBoxConfig)
                 ),
             ];
-            if (!e.appWin.supportFC) {
-                this.statusBoxes.splice(4, 2);
-            }
             const panelConfig = {
                 cls: "iscsi-overview-status-panel",
                 layout: "hbox",
@@ -65,11 +92,13 @@ export default
             //     }),
             //     this.owner.panels.detailPanel.fireEvent("select", e);
         },
-
-        onDataReady: function () {
-            console.log("--onDataReady3")
-            Ext.each(this.statusBoxes, (e) => {
-                e.fireEvent("data_ready");
+        loadData: function (data) {
+            const self = this;
+            self.statusBoxes.forEach((statusBox) => {
+                if (statusBox.tpl && statusBox.tpl.data) {
+                    Ext.apply(statusBox.tpl.data, data);
+                    statusBox.updateTpl();
+                }
             });
-        },
+        }
     });

@@ -22,6 +22,9 @@ export default
         constructor: function (e) {
             this.installed = false;
             this.appWin = e.appWin;
+            this.data = {
+                myText: "test text"
+            };
             this.appWin.handleFileUpload = this.handleFileUpload.bind(this);
             this.loaded = false;
             this.callParent([this.fillConfig(e)]);
@@ -36,7 +39,44 @@ export default
                 this
             );
         },
+        createActionsSection: function () {
+            return new SYNO.ux.FieldSet({
+                title: this.helper.V('ui', 'section_rr_actions'),
+                items: [
+                    {
+                        xtype: 'syno_panel',
+                        activeTab: 0,
+                        plain: true,
+                        items: [
+                            {
+                                xtype: 'syno_compositefield',
+                                hideLabel: true,
+                                items: [{
+                                    xtype: 'syno_displayfield',
+                                    value: this.helper.V('ui', 'run_update'),
+                                    width: 140
+                                },
+                                {
+                                    xtype: 'syno_button',
+                                    btnStyle: 'green',
+                                    text: this.helper.V('health_panel', 'btn_from_pc'),
+                                    handler: this.onFromPC.bind(this)
+                                },
+                                {
+                                    xtype: 'syno_button',
+                                    btnStyle: 'blue',
+                                    text: this.helper.V('health_panel', 'btn_from_ds'),
+                                    handler: this.onFromDS.bind(this)
+                                }]
+                            },
+                        ],
+                        deferredRender: true
+                    },
+                ]
+            });
+        },
         fillConfig: function (e) {
+            // this.uploadFileDialog = this.createUplaodFileDialog();
             this.panels = {
                 healthPanel: new SYNOCOMMUNITY.RRManager.Overview.HealthPanel({
                     appWin: e.appWin,
@@ -44,10 +84,29 @@ export default
                 }),
                 statusBoxsPanel: new SYNOCOMMUNITY.RRManager.Overview.StatusBoxsPanel({
                     appWin: e.appWin,
-                    owner: this
-                }),               
+                    owner: this,
+                }),
+                actionsPanel: {
+                    xtype: "syno_panel",
+                    itemId: "rrActionsPanel",
+                    cls: "iscsi-overview-statusbox iscsi-overview-statusbox-lun iscsi-overview-statusbox-healthy iscsi-overview-statusbox-click",
+                    flex: 1,
+                    height: 96,
+                    hidden: true,
+                    layout: "vbox",
+                    layoutConfig: { align: "stretch" },
+                    items: [this.createActionsSection()],
+                },
             };
             const t = {
+                itemId: "taskTabPanel",
+                deferredRender: false,
+                layoutOnTabChange: true,
+                border: false,
+                plain: true,
+                activeTab: 0,
+                region: "center",
+                height: 500,
                 layout: "vbox",
                 cls: "blue-border",
                 layoutConfig: { align: "stretch" },
@@ -178,9 +237,11 @@ export default
 
                 if (systemInfo && packages) {
                     self.rrCheckVersion = rrCheckVersion;
-                    self.systemInfoTxt = `Model: ${systemInfo?.model}, RAM: ${systemInfo?.ram} MB, DSM version: ${systemInfo?.version_string} `;
+
+                    self.systemInfoTxt = `Welcome to RR Manager!`; // 
                     const rrManagerPackage = packages.packages.find((packageInfo) => packageInfo.id == 'rr-manager');
-                    self.rrManagerVersionText = `🛡️RR Manager v.: ${rrManagerPackage?.version}`;
+
+
                     self.panels?.healthPanel?.fireEvent(
                         "select",
                         self.panels?.healthPanel?.clickedBox
@@ -190,7 +251,15 @@ export default
                         self.panels.statusBoxsPanel.clickedBox
                     );
                     await self.updateAllForm();
-                    self.rrVersionText = self.rrConfig.rr_version;
+                    // self.rrVersionText = self.rrConfig.rr_version;
+                    var data = {
+                        text: `Model: ${systemInfo?.model}`,
+                        text2: `RAM: ${systemInfo?.ram} MB`,
+                        text3: `DSM version: ${systemInfo?.version_string}`,
+                        rrManagerVersion: `${rrManagerPackage?.version}`,
+                        rrVersion: self.rrConfig.rr_version
+                    };
+                    Ext.apply(data, self.data);
                     if (!self.installed) {
                         //create rr tmp folder
                         self.rrManagerConfig = self.rrConfig.rr_manager_config;
@@ -202,7 +271,7 @@ export default
                         self.installed = true;
                     }
                     self.panels?.healthPanel?.fireEvent("data_ready");
-                    self.panels?.statusBoxsPanel?.fireEvent("data_ready");
+                    self.panels?.statusBoxsPanel?.fireEvent("data_ready", data);
                     self.loaded = true;
                 }
 
@@ -262,6 +331,8 @@ export default
         onDataReady: async function () {
             const e = this;
             e.loaded = true;
+            e.getComponent("rrActionsPanel")?.setVisible(true);
+            e.doLayout();
             // need to clean the spinner when form has been loaded
             e.appWin.clearStatusBusy();
         },
@@ -270,5 +341,83 @@ export default
                 return this.getActiveTab().overviewPanel;
             }
             return null;
+        },
+        onFromPC: function () {
+            this.uploadFileDialog = this.createUplaodFileDialog();
+            this.uploadFileDialog.open();
+        },
+        onFromDS: function () {
+            self = this;
+            if (!Ext.isDefined(this.dialog)) {
+                var a = this.getFileExtsByImageType().toString().replace(/\./g, "");
+                this.dialog = new SYNO.SDS.Utils.FileChooser.Chooser({
+                    parent: this,
+                    owner: this.appWin,
+                    closeOwnerWhenNoShare: true,
+                    closeOwnerNumber: 0,
+                    enumRecycle: true,
+                    superuser: true,
+                    usage: { type: "open", multiple: true },
+                    title: this.helper.T("upload_file_dialog", "choose_file_title"),
+                    folderToolbar: true,
+                    getFilterPattern: function () {
+                        return a;
+                    },
+                    treeFilter: this.helper.VMMDSChooserTreeFilter,
+                    listeners: {
+                        scope: this,
+                        choose: function (d, b, c) {
+                            b.records.forEach(function (f) {
+                                var e = {
+                                    name: f
+                                        .get("path")
+                                        .substring(
+                                            f.get("path").lastIndexOf("/") + 1,
+                                            f.get("path").lastIndexOf(".")
+                                        ),
+                                    path: f.get("path"),
+                                    real_path: _S("hostname") + f.get("path"),
+                                    get_patch_by: "from_ds",
+                                    file_size: f.get("filesize"),
+                                };
+                                if (!this.preCheck(e)) {
+                                    return true;
+                                }
+                                self.uploadFileDialog.updateFileInfoHandler(e);
+                            }, this);
+                            this.dialog.close();
+                        },
+                        close: function () {
+                            delete this.dialog;
+                        },
+                    },
+                });
+            }
+            this.dialog.show();
+        },
+        createUplaodFileDialog: function () {
+            this.uploadFileDialog = new SYNOCOMMUNITY.RRManager.Overview.UploadFileDialog({
+                parent: this,
+                owner: this.appWin,
+                helper: this.helper,
+                id: "upload_file_dialog",
+                title: this.helper.V("ui", "upload_file_dialog_title"),
+                apiProvider: this.apiProvider
+            });
+            return this.uploadFileDialog;
+        },
+        preCheck: function (a) {
+            var b = a.path.substring(a.path.lastIndexOf("."));
+            if (-1 === this.getFileExtsByImageType().indexOf(b)) {
+                return false;
+            }
+            return true;
+        },
+        exts: {
+            zip: [".zip"],
+        },
+        imageType: "zip",
+        getFileExtsByImageType: function () {
+            return this.exts[this.imageType];
         },
     });
