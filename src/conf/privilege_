@@ -29,11 +29,11 @@
     ],
     "executable": [
         {
-            "relpath": "ui/getConfig.cgi",
+            "relpath": "ui/webapi/getConfig.cgi",
             "run-as": "package"
         },
         {
-            "relpath": "ui/getAddons.cgi",
+            "relpath": "ui/webapi/getAddons.cgi",
             "run-as": "package"
         }
     ]

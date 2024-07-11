@@ -1,6 +1,6 @@
 SPK_NAME = rr-manager
 SPK_VERS = 2.0
-SPK_REV = 60
+SPK_REV = 61
 SPK_ICON = src/rr-manager.png
 
 DSM_UI_DIR = ui
@@ -65,31 +65,30 @@ rr-manager_extra_install:
 
 	install -m 755 -d $(STAGING_DIR)/ui/
 	install -m 755 -d $(STAGING_DIR)/ui/libs/	
-	install -m 755 -d $(STAGING_DIR)/ui/webapi/
-
+	install -m 755 -d $(STAGING_DIR)/ui/webapi/	
+		
+	install -m 755 src/webapi/checkUpdateStatus.cgi $(STAGING_DIR)/ui/webapi/checkUpdateStatus.cgi
+	install -m 755 src/webapi/getAddons.cgi $(STAGING_DIR)/ui/webapi/getAddons.cgi
+	install -m 755 src/webapi/getAvailableUpdates.cgi $(STAGING_DIR)/ui/webapi/getAvailableUpdates.cgi	
 	install -m 755 src/webapi/getConfig.cgi $(STAGING_DIR)/ui/webapi/getConfig.cgi
+	install -m 755 src/webapi/getModules.cgi $(STAGING_DIR)/ui/webapi/getModules.cgi
 	install -m 755 src/webapi/getNetworkInfo.cgi $(STAGING_DIR)/ui/webapi/getNetworkInfo.cgi
 	install -m 755 src/webapi/getRrReleaseInfo.cgi $(STAGING_DIR)/ui/webapi/getRrReleaseInfo.cgi
-	install -m 755 src/webapi/getAddons.cgi $(STAGING_DIR)/ui/webapi/getAddons.cgi
-	install -m 755 src/webapi/getModules.cgi $(STAGING_DIR)/ui/webapi/getModules.cgi
 	install -m 755 src/webapi/readUpdateFile.cgi $(STAGING_DIR)/ui/webapi/readUpdateFile.cgi
 	install -m 755 src/webapi/uploadConfigFile.cgi $(STAGING_DIR)/ui/webapi/uploadConfigFile.cgi
-	install -m 755 src/webapi/checkUpdateStatus.cgi $(STAGING_DIR)/ui/webapi/checkUpdateStatus.cgi
-	install -m 755 src/webapi/getAvailableUpdates.cgi $(STAGING_DIR)/ui/webapi/getAvailableUpdates.cgi
 	install -m 755 src/webapi/uploadUpdateFileInfo.cgi $(STAGING_DIR)/ui/webapi/uploadUpdateFileInfo.cgi
-	# install -m 755 src/webapi/rr-manager.api $(STAGING_DIR)/ui/webapi/rr-manager.api
-	# install -m 755 src/webapi/rr-manager.auth $(STAGING_DIR)/ui/webapi/rr-manager.auth
 	
-
-	install -m 755 src/ui/config.txt $(STAGING_DIR)/ui/config.txt
-	install -m 755 src/ui/style.css $(STAGING_DIR)/ui/style.css
-	install -m 755 src/ui/tasks.sql $(STAGING_DIR)/ui/tasks.sql
-	install -m 755 src/ui/install.sh $(STAGING_DIR)/ui/install.sh
-
 	install -m 644 src/ui/config $(STAGING_DIR)/ui/config
+	install -m 755 src/ui/config.txt $(STAGING_DIR)/ui/config.txt	
+	install -m 644 src/ui/helptoc.conf $(STAGING_DIR)/ui/helptoc.conf
+	install -m 644 src/ui/index.conf $(STAGING_DIR)/ui/index.conf
+	install -m 755 src/ui/install.sh $(STAGING_DIR)/ui/install.sh
 	install -m 644 src/ui/rr-manager.js $(STAGING_DIR)/ui/rr-manager.js
 	install -m 644 src/ui/rr-manager.widget.js $(STAGING_DIR)/ui/rr-manager.widget.js
-	install -m 644 src/ui/helptoc.conf $(STAGING_DIR)/ui/helptoc.conf
+	install -m 755 src/ui/style.css $(STAGING_DIR)/ui/style.css
+	install -m 755 src/ui/tasks.sql $(STAGING_DIR)/ui/tasks.sql
+
+	
 	install -m 755 -d $(STAGING_DIR)/ui/help
 	for language in enu fre; do \
 		install -m 755 -d $(STAGING_DIR)/ui/help/$${language}; \
