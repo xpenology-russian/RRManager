@@ -12,6 +12,7 @@ Ext.define("SYNOCOMMUNITY.RRManager.IframePanel", {
                     itemId: "iframeBox",
                     xtype: "box",
                     cls: "iframe-panel",
+                    height: '600',
                     html: '<iframe src="' + (config.iframeSrc || '') + '" style="width:100%; height:100%; border:none;"></iframe>',
                 }
             ],

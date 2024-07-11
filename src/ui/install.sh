@@ -12,3 +12,6 @@ echo "DELETE FROM task WHERE task_name='SetRootPrivsToRrManager'" | sqlite3 /usr
 #Add sudoers for loader disk
 echo -e "sc-rr-manager ALL=(ALL) NOPASSWD: /usr/bin/rr-loaderdisk.sh mountLoaderDisk\nsc-rr-manager ALL=(ALL) NOPASSWD: /usr/bin/rr-loaderdisk.sh unmountLoaderDisk" | tee /etc/sudoers.d/99-rr-loaderdisk /etc.defaults/sudoers.d/99-rr-loaderdisk > /dev/null
 chmod 0440 /etc/sudoers.d/99-rr-loaderdisk /etc.defaults/sudoers.d/99-rr-loaderdisk
+#Add ttyd alias
+cp /var/packages/rr-manager/target/ui/alias.syno-app-portal.RRM.conf /etc/nginx/conf.d/alias.syno-app-portal.RRM.conf
+systemctl restart nginx

@@ -1,6 +1,6 @@
 SPK_NAME = rr-manager
 SPK_VERS = 2.0
-SPK_REV = 61
+SPK_REV = 62
 SPK_ICON = src/rr-manager.png
 
 DSM_UI_DIR = ui
@@ -77,7 +77,8 @@ rr-manager_extra_install:
 	install -m 755 src/webapi/readUpdateFile.cgi $(STAGING_DIR)/ui/webapi/readUpdateFile.cgi
 	install -m 755 src/webapi/uploadConfigFile.cgi $(STAGING_DIR)/ui/webapi/uploadConfigFile.cgi
 	install -m 755 src/webapi/uploadUpdateFileInfo.cgi $(STAGING_DIR)/ui/webapi/uploadUpdateFileInfo.cgi
-	
+
+	install -m 644 src/ui/alias.syno-app-portal.RRM.conf $(STAGING_DIR)/ui/alias.syno-app-portal.RRM.conf
 	install -m 644 src/ui/config $(STAGING_DIR)/ui/config
 	install -m 755 src/ui/config.txt $(STAGING_DIR)/ui/config.txt	
 	install -m 644 src/ui/helptoc.conf $(STAGING_DIR)/ui/helptoc.conf

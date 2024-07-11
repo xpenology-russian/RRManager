@@ -39,19 +39,19 @@ export default
             return [
                 {
                     text: this.helper.V('ui', 'tab_general'),
-                    iconCls: "icon-overview",
+                    iconCls: "icon-debug",
                     fn: "SYNOCOMMUNITY.RRManager.Overview.Main",
                     // help: "overview.html",
                 },
                 {
                     text: this.helper.V('ui', 'tab_addons'),
-                    iconCls: "icon-log",
+                    iconCls: "icon-debug",
                     fn: "SYNOCOMMUNITY.RRManager.Addons.Main",
                     // help: "overview.html",
                 },
                 {
                     text: this.helper.V('ui', 'tab_configuration'),
-                    iconCls: "icon-settings",
+                    iconCls: "icon-debug",
                     fn: "SYNOCOMMUNITY.RRManager.Setting.Main",
                     // help: "setting.html",
                 },
@@ -63,7 +63,7 @@ export default
                 },
                 {
                     text: 'Console',
-                    iconCls: "icon-ssh",
+                    iconCls: "icon-debug",
                     fn: "SYNOCOMMUNITY.RRManager.Ssh.Main",
                     // help: "setting.html",
                 }                

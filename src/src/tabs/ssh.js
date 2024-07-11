@@ -7,6 +7,7 @@ import { CanvasAddon } from '@xterm/addon-canvas';
 import { AttachAddon } from '@xterm/addon-attach';
 import { Unicode11Addon } from '@xterm/addon-unicode11';
 import { Xterm } from '../utils/xterm';
+import { iframePanel } from '../components/iframePanel';
 export default Ext.define('SYNOCOMMUNITY.RRManager.Ssh.Main', {
     extend: 'SYNO.ux.Panel',
     helper: SYNOCOMMUNITY.RRManager.Helper,
@@ -28,41 +29,17 @@ export default Ext.define('SYNOCOMMUNITY.RRManager.Ssh.Main', {
             this
         );
     },
-    initToolbar: function () {
-        const e = this,
-            t = new SYNO.ux.Toolbar();
-        return (
-            (e.clearButton = new SYNO.ux.Button({
-                xtype: "syno_button",
-                text: "Connect",
-                handler: e.onLogClear,
-                btnStyle: "blue",
-                scope: e,
-            })),
-            (e.saveButton = new SYNO.ux.Button({
-                xtype: "syno_button",
-                text: "Disconnect",
-                handler: e.onAddonsSave,
-                // btnStyle: "red",
-                scope: e,
-            }))
-        );
-    },
     fillConfig: function (e) {
         const me = this;
         const cfg = {
+            layout: 'fit',
+            width: '100%',
+            autoHeight: true,
             items: [
-                {
-                    xtype: 'container',
-                    itemId: 'terminalContainer',
-                    cls: 'terminal-container',
-                    layout: 'fit',
-                    style: {
-                        width: '100%',
-                        height: '100%'
-                    }
-                }
-            ],
+                new SYNOCOMMUNITY.RRManager.IframePanel({
+                    iframeSrc: document.location.origin + '/ttyd',
+                }),
+            ],            
             listeners: {
                 scope: me,
                 afterrender: me.onAfterRender,
@@ -128,22 +105,22 @@ export default Ext.define('SYNOCOMMUNITY.RRManager.Ssh.Main', {
     },
     onAfterRender: function () {
         const me = this;
-        Ext.defer(function () {
-            const container = me.getComponent("terminalContainer");
-            if (container) {
-                const containerEl = container.getEl().dom;
-                me.options = me.getOptions();
-                me.xterm = new Xterm(me.options);
-                me.xterm.refreshToken();
-                me.xterm.open(containerEl);
-                me.xterm.connect();
-                // // Adjust terminal size to fit the container
-                me.resizeTerminal();
+        // Ext.defer(function () {
+        //     const container = me.getComponent("terminalContainer");
+        //     if (container) {
+        //         const containerEl = container.getEl().dom;
+        //         me.options = me.getOptions();
+        //         me.xterm = new Xterm(me.options);
+        //         me.xterm.refreshToken();
+        //         me.xterm.open(containerEl);
+        //         me.xterm.connect();
+        //         // // Adjust terminal size to fit the container
+        //         me.resizeTerminal();
 
-            } else {
-                console.error('Terminal container not found');
-            }
-        }, 50);
+        //     } else {
+        //         console.error('Terminal container not found');
+        //     }
+        // }, 50);
     },
     onResize: function () {
         this.resizeTerminal();
