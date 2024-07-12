@@ -12,7 +12,9 @@ export default
         },
         onDataReady: function () {
             let status = "normal";
-            this.iconTemplate.overwrite(this.getComponent("icon").getEl(), { status: status }),
+            this.iconTemplate.overwrite(this.getComponent("icon").getEl(), { status: status, 
+                style:"background-image:url('webapi/entry.cgi?api=SYNO.Core.Synohdpack&version=1&method=getHDIcon&res=72&retina=false&path=webman/3rdparty/rr-manager/images/rr-manager-{0}.png&app_version=0.1')" 
+            }),
                 this.titleTemplate.overwrite(this.upperPanel.getComponent("title").getEl(), {
                     status: status,
                 }),
@@ -56,7 +58,7 @@ export default
             return Ext.apply(panelConfig, e), panelConfig;
         },
         createIconTpl: function () {
-            return new Ext.XTemplate('<div class="health-icon {status}"></div>', {
+            return new Ext.XTemplate('<div class="health-icon {status}" style="{style}"></div>', {
                 compiled: !0,
                 disableFormats: !0,
             });
