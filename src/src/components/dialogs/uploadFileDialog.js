@@ -63,6 +63,9 @@ export default
             if (this.owner) {
                 this.owner.clearStatusBusy();
             }
+            else if(this.parent.appWin) {
+                this.parent.appWin.clearStatusBusy();
+            }
             else {
                 this.helper.unmask(this.parent);
                 this.parent.owner.appWin.clearStatusBusy();
