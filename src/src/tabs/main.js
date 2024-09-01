@@ -1,10 +1,12 @@
 import UpdateAvailable from '../components/dialogs/updateAvailableDialog';
 import PasswordConfirmDialog from '../components/dialogs/passwordConfirmDialog';
 import UploadFileDialog from '../components/dialogs/uploadFileDialog';
+import UpdateHelper from '../utils/updateHelper';
 export default
     Ext.define("SYNOCOMMUNITY.RRManager.Overview.Main", {
         extend: "SYNO.ux.Panel",
         helper: SYNOCOMMUNITY.RRManager.Helper,
+        updateHelper: SYNOCOMMUNITY.RRManager.UpdateHelper,
         apiProvider: SYNOCOMMUNITY.RRManager.SynoApiProvider,
         formatString: function (str, ...args) {
             return str.replace(/{(\d+)}/g, function (match, number) {
@@ -29,6 +31,7 @@ export default
             this.loaded = false;
             this.callParent([this.fillConfig(e)]);
             this.apiProvider.init(this.sendWebAPI.bind(this));
+            this.updateHelper.init(this.apiProvider, this);
             this.mon(
                 this,
                 "data_ready",
@@ -231,7 +234,6 @@ export default
                 const [systemInfo, packages, rrCheckVersion] = await Promise.all([
                     self.apiProvider.getSytemInfo(),
                     self.apiProvider.getPackagesList(),
-                    //TODO: uncomment when RR version will be available
                     self.apiProvider.checkRRVersion()
                 ]);
 
@@ -251,7 +253,6 @@ export default
                         self.panels.statusBoxsPanel.clickedBox
                     );
                     await self.updateAllForm();
-                    // self.rrVersionText = self.rrConfig.rr_version;
                     var data = {
                         text: `Model: ${systemInfo?.model}`,
                         text2: `RAM: ${systemInfo?.ram} MB`,
@@ -383,7 +384,7 @@ export default
                                 if (!this.preCheck(e)) {
                                     return true;
                                 }
-                                self.uploadFileDialog.updateFileInfoHandler(e);
+                                self.updateHelper.updateFileInfoHandler(e);
                             }, this);
                             this.dialog.close();
                         },

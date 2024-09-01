@@ -2,7 +2,6 @@ export default
     Ext.define("SYNOCOMMUNITY.RRManager.Setting.Main", {
         extend: "SYNO.SDS.Utils.TabPanel",
         helper: SYNOCOMMUNITY.RRManager.Helper,
-        API: {},
         constructor: function (e) {
             (this.appWin = e.appWin),
                 (this.owner = e.owner),
@@ -26,7 +25,7 @@ export default
                 owner: this,
                 itemId: "SynoInfoTab",
             });
-            
+
             this.rrManagerConfigTab = new SYNOCOMMUNITY.RRManager.Setting.RrManagerConfigTab({
                 appWin: this.appWin,
                 owner: this,
@@ -55,7 +54,7 @@ export default
         },
         loadAllForms: function (e) {
             this.items.each((t) => {
-                if (Ext.isFunction(t.loadForm)) {
+                if (t && typeof t.loadForm !== undefined && Ext.isFunction(t.loadForm)) {
                     if (t.itemId == "SynoInfoTab") {
                         t.loadForm(e.synoinfo);
                     } else {

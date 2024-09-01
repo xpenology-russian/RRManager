@@ -28,7 +28,7 @@ if len(user) > 0:
     query_string = os.environ.get('QUERY_STRING', '')
     query_params = parse_qs(query_string)
     file_name_encoded = query_params.get('file', [None])[0]
-    file_name = unquote(file_name_encoded) 
+    file_name = unquote(file_name_encoded).strip() 
     message ='after write build'      
     try:
         with open('/tmp/rr_update_filename', 'w') as build_file:

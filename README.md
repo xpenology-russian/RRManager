@@ -28,6 +28,5 @@ Please note that you need to upload `updateX.zip(updateall-24.3.0)`, not `rr-23.
  I will add that validation in the future.
 
 ## TODO:
-- [ ] Fix ui to make it responsive
 - [ ] Add localizations
 
