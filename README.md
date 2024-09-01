@@ -1,5 +1,5 @@
 # What is that?
-![Main Screen](img/main.gif)
+![Main Screen](img/rrm2x.png)
 RRManager is a Redpill Recovery DSM application aimed to provide the ability to configure/update RR without booting to RR recovery. This package is for experienced users. 
 
 ❗❗❗ Required `RR v.24.2.4`
