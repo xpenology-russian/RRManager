@@ -7,7 +7,7 @@ index_title = "Help documentation"
 greetings_text = "Welcome to RR Manager!"
 tab_general = "General"
 tab_addons = "Addons"
-tab_configuration = "Configuration"
+tab_configuration = "Settings"
 tab_debug = "Debug"
 
 alt_confirm = "Confirm"

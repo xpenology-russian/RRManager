@@ -39,21 +39,15 @@ export default
             return [
                 {
                     text: this.helper.V('ui', 'tab_general'),
-                    iconCls: "icon-debug",
+                    iconCls: "icon-rr-overview",
                     fn: "SYNOCOMMUNITY.RRManager.Overview.Main",
                     // help: "overview.html",
                 },
                 {
                     text: this.helper.V('ui', 'tab_addons'),
-                    iconCls: "icon-debug",
+                    iconCls: "icon-rr-addons",
                     fn: "SYNOCOMMUNITY.RRManager.Addons.Main",
                     // help: "overview.html",
-                },
-                {
-                    text: this.helper.V('ui', 'tab_configuration'),
-                    iconCls: "icon-debug",
-                    fn: "SYNOCOMMUNITY.RRManager.Setting.Main",
-                    // help: "setting.html",
                 },
                 {
                     text: this.helper.V('ui', 'tab_debug'),
@@ -63,8 +57,14 @@ export default
                 },
                 {
                     text: 'Console',
-                    iconCls: "icon-debug",
+                    iconCls: "icon-terminal-and-SNMP",
                     fn: "SYNOCOMMUNITY.RRManager.Ssh.Main",
+                    // help: "setting.html",
+                },
+                {
+                    text: this.helper.V('ui', 'tab_configuration'),
+                    iconCls: "icon-rr-setting",
+                    fn: "SYNOCOMMUNITY.RRManager.Setting.Main",
                     // help: "setting.html",
                 }                
             ];
