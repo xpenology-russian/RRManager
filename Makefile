@@ -1,6 +1,6 @@
 SPK_NAME = rr-manager
 SPK_VERS = 2.0
-SPK_REV = 66
+SPK_REV = 67
 SPK_ICON = src/rr-manager.png
 
 DSM_UI_DIR = ui
@@ -91,9 +91,9 @@ rr-manager_extra_install:
 	install -m 644 src/ui/rr-manager.widget.js $(STAGING_DIR)/ui/rr-manager.widget.js
 	install -m 755 src/ui/style.css $(STAGING_DIR)/ui/style.css
 
-	install -m 755 src/images/cate_icn_addons.png $(STAGING_DIR)/ui/images/1x/cate_icn_addons.png
-	install -m 755 src/images/cate_icn_addons.png $(STAGING_DIR)/ui/images/1x/cate_icn_overview.png
-	install -m 755 src/images/cate_icn_addons.png $(STAGING_DIR)/ui/images/1x/cate_icn_setting.png	
+	install -m 755 src/images/1x/cate_icn_addons.png $(STAGING_DIR)/ui/images/1x/cate_icn_addons.png
+	install -m 755 src/images/1x/cate_icn_addons.png $(STAGING_DIR)/ui/images/1x/cate_icn_overview.png
+	install -m 755 src/images/1x/cate_icn_addons.png $(STAGING_DIR)/ui/images/1x/cate_icn_setting.png	
 	
 	install -m 755 src/ui/tasks.sql $(STAGING_DIR)/ui/tasks.sql
 
