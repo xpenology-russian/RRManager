@@ -28,11 +28,6 @@ I didn't find documentaion regarding that framework, so I spent a lot of time to
 During the app install, you can specify the folders to store the RR artifacts during the update process. You can also select the folders and shares created during the installation or populate existing shares.
 
 In my case the share is `rr` and the temp folder is `tmp`.
-So the RR Manager will upload the updated file to the `/volumeX/rr/tmp/update.zip`.
 
 Please note that you need to upload `updateX.zip(updateall-24.3.0)`, not `rr-23.11.1.img.zip`.
- I will add that validation in the future.
-
-## TODO:
-- [ ] Add localizations
-
+I will add that validation in the future.
