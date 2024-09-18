@@ -1,6 +1,6 @@
 SPK_NAME = rr-manager
 SPK_VERS = 2.0
-SPK_REV = 70
+SPK_REV = 71
 SPK_ICON = src/rr-manager.png
 
 DSM_UI_DIR = ui
@@ -65,20 +65,20 @@ rr-manager_extra_install:
 
 	install -m 755 -d $(STAGING_DIR)/ui/
 	install -m 755 -d $(STAGING_DIR)/ui/libs/	
-	install -m 755 -d $(STAGING_DIR)/ui/webapi/	
+	install -m 755 -d $(STAGING_DIR)/ui/scripts/	
 	install -m 755 -d $(STAGING_DIR)/ui/images/
 	install -m 755 -d $(STAGING_DIR)/ui/images/1x
 		
-	install -m 755 src/webapi/checkUpdateStatus.cgi $(STAGING_DIR)/ui/webapi/checkUpdateStatus.cgi
-	install -m 755 src/webapi/getAddons.cgi $(STAGING_DIR)/ui/webapi/getAddons.cgi
-	install -m 755 src/webapi/getAvailableUpdates.cgi $(STAGING_DIR)/ui/webapi/getAvailableUpdates.cgi	
-	install -m 755 src/webapi/getConfig.cgi $(STAGING_DIR)/ui/webapi/getConfig.cgi
-	install -m 755 src/webapi/getModules.cgi $(STAGING_DIR)/ui/webapi/getModules.cgi
-	install -m 755 src/webapi/getNetworkInfo.cgi $(STAGING_DIR)/ui/webapi/getNetworkInfo.cgi
-	install -m 755 src/webapi/getRrReleaseInfo.cgi $(STAGING_DIR)/ui/webapi/getRrReleaseInfo.cgi
-	install -m 755 src/webapi/readUpdateFile.cgi $(STAGING_DIR)/ui/webapi/readUpdateFile.cgi
-	install -m 755 src/webapi/uploadConfigFile.cgi $(STAGING_DIR)/ui/webapi/uploadConfigFile.cgi
-	install -m 755 src/webapi/uploadUpdateFileInfo.cgi $(STAGING_DIR)/ui/webapi/uploadUpdateFileInfo.cgi
+	install -m 755 src/scripts/checkUpdateStatus.cgi $(STAGING_DIR)/ui/scripts/checkUpdateStatus.cgi
+	install -m 755 src/scripts/getAddons.cgi $(STAGING_DIR)/ui/scripts/getAddons.cgi
+	install -m 755 src/scripts/getAvailableUpdates.cgi $(STAGING_DIR)/ui/scripts/getAvailableUpdates.cgi	
+	install -m 755 src/scripts/getConfig.cgi $(STAGING_DIR)/ui/scripts/getConfig.cgi
+	install -m 755 src/scripts/getModules.cgi $(STAGING_DIR)/ui/scripts/getModules.cgi
+	install -m 755 src/scripts/getNetworkInfo.cgi $(STAGING_DIR)/ui/scripts/getNetworkInfo.cgi
+	install -m 755 src/scripts/getRrReleaseInfo.cgi $(STAGING_DIR)/ui/scripts/getRrReleaseInfo.cgi
+	install -m 755 src/scripts/readUpdateFile.cgi $(STAGING_DIR)/ui/scripts/readUpdateFile.cgi
+	install -m 755 src/scripts/uploadConfigFile.cgi $(STAGING_DIR)/ui/scripts/uploadConfigFile.cgi
+	install -m 755 src/scripts/uploadUpdateFileInfo.cgi $(STAGING_DIR)/ui/scripts/uploadUpdateFileInfo.cgi
 
 	install -m 644 src/ui/alias.syno-app-portal.RRM.conf $(STAGING_DIR)/ui/alias.syno-app-portal.RRM.conf
 	install -m 644 src/ui/config $(STAGING_DIR)/ui/config

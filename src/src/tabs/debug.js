@@ -7,7 +7,7 @@ Ext.define("SYNOCOMMUNITY.RRManager.Debug.Main", {
             (this.owner = e.owner),
             this.callParent([this.fillConfig(e)]);
     },
-    _prefix: '/webman/3rdparty/rr-manager/webapi/',
+    _prefix: '/webman/3rdparty/rr-manager/scripts/',
     callCustomScript: function (scriptName) {
 
         return new Promise((resolve, reject) => {
