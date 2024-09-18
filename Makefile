@@ -1,6 +1,6 @@
 SPK_NAME = rr-manager
 SPK_VERS = 2.0
-SPK_REV = 69
+SPK_REV = 70
 SPK_ICON = src/rr-manager.png
 
 DSM_UI_DIR = ui
@@ -34,7 +34,6 @@ SERVICE_WIZARD_SHARE = wizard_download_dir
 WIZARDS_DIR = $(WORK_DIR)/generated-wizards
 WIZARDS = install_uifile upgrade_uifile
 SUPPORTED_LANGUAGES = fre
-support_aaprofile = yes
 
 wizards: generated-wizards
 include ../../mk/spksrc.spk.mk
