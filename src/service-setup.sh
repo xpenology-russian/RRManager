@@ -1,9 +1,7 @@
 PYTHON_DIR="/var/packages/python311/target/bin"
 PACKAGE="rr-manager"
-INSTALL_DIR="/usr/local/${PACKAGE}"
-# PYTHON_DIR="/usr/local/bin/"
 PATH="${SYNOPKG_PKGDEST}/env/bin:${SYNOPKG_PKGDEST}/bin:${SYNOPKG_PKGDEST}/usr/bin:${PYTHON_DIR}:${PATH}"
-TMP_DIR="${SYNOPKG_PKGDEST}/../../@tmp"
+CFG_FILE="${SYNOPKG_PKGDEST}/ui/config.txt"
 
 service_postinst ()
 {
@@ -14,7 +12,6 @@ service_postinst ()
 
     echo ${separator}
     install_python_wheels
-    # /bin/sqlite3 /usr/syno/etc/esynoscheduler/esynoscheduler.db <${SYNOPKG_PKGDEST}/ui/createsqlitedata.sql
 
     echo ${separator}
     echo "Install packages to the app/libs folder"
@@ -25,30 +22,27 @@ service_postinst ()
         echo "Populate config.txt"
         sed -i -e "s|@this_is_upload_realpath@|${wizard_download_dir}|g" \
             -e "s|@this_is_sharename@|${wizard_download_share}|g" \
-        "${SYNOPKG_PKGDEST}/ui/config.txt"
+        "${CFG_FILE}"
     fi
-    exit 0
 }
 
 service_preupgrade ()
 {
  # Save configuration files
-    rm -fr ${TMP_DIR}/${PACKAGE}
-    mkdir -p ${TMP_DIR}/${PACKAGE}
+    rm -fr ${SYNOPKG_TEMP_UPGRADE_FOLDER}/${PACKAGE}
+    mkdir -p ${SYNOPKG_TEMP_UPGRADE_FOLDER}/${PACKAGE}
 
       # Save package config
-    mv "${SYNOPKG_PKGDEST}/ui/config.txt" "${TMP_DIR}/${PACKAGE}/config.txt"
-    exit 0
+    mv "${CFG_FILE}" "${SYNOPKG_TEMP_UPGRADE_FOLDER}/${PACKAGE}/config.txt"
 }
 
 service_postupgrade ()
 {
-    rm -f "${SYNOPKG_PKGDEST}/ui/config.txt"
+    rm -f "${CFG_FILE}"
     # Restore package config
-    mv "${TMP_DIR}/${PACKAGE}/config.txt" "${SYNOPKG_PKGDEST}/ui/config.txt"
+    mv "${SYNOPKG_TEMP_UPGRADE_FOLDER}/${PACKAGE}/config.txt" "${CFG_FILE}"
     touch /tmp/rr_manager_installed
-    rm -fr ${TMP_DIR}/${PACKAGE}
-    exit 0
+    rm -fr ${SYNOPKG_TEMP_UPGRADE_FOLDER}/${PACKAGE}
 }
 
 # Uninstall the package does not remove the tasks from the scheduler due to lack of permissions
@@ -56,5 +50,4 @@ service_postuninst ()
 {
     echo "DELETE FROM task WHERE task_name='RunRrUpdate'" | sqlite3 /usr/syno/etc/esynoscheduler/esynoscheduler.db
     echo "DELETE FROM task WHERE task_name='ApplyRRConfig'" | sqlite3 /usr/syno/etc/esynoscheduler/esynoscheduler.db
-    exit 0
 }
