@@ -1,7 +1,7 @@
 PYTHON_DIR="/var/packages/python311/target/bin"
 PACKAGE="rr-manager"
 PATH="${SYNOPKG_PKGDEST}/env/bin:${SYNOPKG_PKGDEST}/bin:${SYNOPKG_PKGDEST}/usr/bin:${PYTHON_DIR}:${PATH}"
-CFG_FILE="${SYNOPKG_PKGDEST}/ui/config.txt"
+CFG_FILE="${SYNOPKG_PKGDEST}/app/config.txt"
 
 service_postinst ()
 {
@@ -15,7 +15,7 @@ service_postinst ()
 
     echo ${separator}
     echo "Install packages to the app/libs folder"
-    ${SYNOPKG_PKGDEST}/env/bin/pip install --target ${SYNOPKG_PKGDEST}/ui/scripts/libs/ -r ${SYNOPKG_PKGDEST}/share/wheelhouse/requirements.txt
+    ${SYNOPKG_PKGDEST}/env/bin/pip install --target ${SYNOPKG_PKGDEST}/app/scripts/libs/ -r ${SYNOPKG_PKGDEST}/share/wheelhouse/requirements.txt
 
     echo ${separator}
      if [ "${SYNOPKG_PKG_STATUS}" == "INSTALL" ]; then

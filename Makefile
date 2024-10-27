@@ -3,8 +3,8 @@ SPK_VERS = 2.0
 SPK_REV = 71
 SPK_ICON = src/rr-manager.png
 
-DSM_UI_DIR = ui
-DSM_UI_CONFIG = src/ui/config
+DSM_UI_DIR = app
+DSM_UI_CONFIG = src/app/config
 DSM_APP_NAME = SYNOCOMMUNITY.RRManager.AppInstance
 
 PYTHON_PACKAGE = python311
@@ -63,47 +63,47 @@ rr-manager_extra_install:
 	install -m 755 -d $(STAGING_DIR)/share/wheelhouse/
 	install -m 644 src/requirements.txt $(STAGING_DIR)/share/wheelhouse/requirements.txt
 
-	install -m 755 -d $(STAGING_DIR)/ui/
-	install -m 755 -d $(STAGING_DIR)/ui/libs/	
-	install -m 755 -d $(STAGING_DIR)/ui/scripts/	
-	install -m 755 -d $(STAGING_DIR)/ui/images/
-	install -m 755 -d $(STAGING_DIR)/ui/images/1x
+	install -m 755 -d $(STAGING_DIR)/app/
+	install -m 755 -d $(STAGING_DIR)/app/libs/	
+	install -m 755 -d $(STAGING_DIR)/app/scripts/	
+	install -m 755 -d $(STAGING_DIR)/app/images/
+	install -m 755 -d $(STAGING_DIR)/app/images/1x
 		
-	install -m 755 src/scripts/checkUpdateStatus.cgi $(STAGING_DIR)/ui/scripts/checkUpdateStatus.cgi
-	install -m 755 src/scripts/getAddons.cgi $(STAGING_DIR)/ui/scripts/getAddons.cgi
-	install -m 755 src/scripts/getAvailableUpdates.cgi $(STAGING_DIR)/ui/scripts/getAvailableUpdates.cgi	
-	install -m 755 src/scripts/getConfig.cgi $(STAGING_DIR)/ui/scripts/getConfig.cgi
-	install -m 755 src/scripts/getModules.cgi $(STAGING_DIR)/ui/scripts/getModules.cgi
-	install -m 755 src/scripts/getNetworkInfo.cgi $(STAGING_DIR)/ui/scripts/getNetworkInfo.cgi
-	install -m 755 src/scripts/getRrReleaseInfo.cgi $(STAGING_DIR)/ui/scripts/getRrReleaseInfo.cgi
-	install -m 755 src/scripts/readUpdateFile.cgi $(STAGING_DIR)/ui/scripts/readUpdateFile.cgi
-	install -m 755 src/scripts/uploadConfigFile.cgi $(STAGING_DIR)/ui/scripts/uploadConfigFile.cgi
-	install -m 755 src/scripts/uploadUpdateFileInfo.cgi $(STAGING_DIR)/ui/scripts/uploadUpdateFileInfo.cgi
+	install -m 755 src/scripts/checkUpdateStatus.cgi $(STAGING_DIR)/app/scripts/checkUpdateStatus.cgi
+	install -m 755 src/scripts/getAddons.cgi $(STAGING_DIR)/app/scripts/getAddons.cgi
+	install -m 755 src/scripts/getAvailableUpdates.cgi $(STAGING_DIR)/app/scripts/getAvailableUpdates.cgi	
+	install -m 755 src/scripts/getConfig.cgi $(STAGING_DIR)/app/scripts/getConfig.cgi
+	install -m 755 src/scripts/getModules.cgi $(STAGING_DIR)/app/scripts/getModules.cgi
+	install -m 755 src/scripts/getNetworkInfo.cgi $(STAGING_DIR)/app/scripts/getNetworkInfo.cgi
+	install -m 755 src/scripts/getRrReleaseInfo.cgi $(STAGING_DIR)/app/scripts/getRrReleaseInfo.cgi
+	install -m 755 src/scripts/readUpdateFile.cgi $(STAGING_DIR)/app/scripts/readUpdateFile.cgi
+	install -m 755 src/scripts/uploadConfigFile.cgi $(STAGING_DIR)/app/scripts/uploadConfigFile.cgi
+	install -m 755 src/scripts/uploadUpdateFileInfo.cgi $(STAGING_DIR)/app/scripts/uploadUpdateFileInfo.cgi
 
-	install -m 644 src/ui/alias.syno-app-portal.RRM.conf $(STAGING_DIR)/ui/alias.syno-app-portal.RRM.conf
-	install -m 644 src/ui/config $(STAGING_DIR)/ui/config
-	install -m 755 src/ui/config.txt $(STAGING_DIR)/ui/config.txt	
-	install -m 644 src/ui/helptoc.conf $(STAGING_DIR)/ui/helptoc.conf
-	install -m 644 src/ui/index.conf $(STAGING_DIR)/ui/index.conf
-	install -m 755 src/ui/install.sh $(STAGING_DIR)/ui/install.sh
-	install -m 644 src/ui/rr-manager.js $(STAGING_DIR)/ui/rr-manager.js
-	install -m 644 src/ui/rr-manager.widget.js $(STAGING_DIR)/ui/rr-manager.widget.js
-	install -m 755 src/ui/style.css $(STAGING_DIR)/ui/style.css
+	install -m 644 src/app/alias.syno-app-portal.RRM.conf $(STAGING_DIR)/app/alias.syno-app-portal.RRM.conf
+	install -m 644 src/app/config $(STAGING_DIR)/app/config
+	install -m 755 src/app/config.txt $(STAGING_DIR)/app/config.txt	
+	install -m 644 src/app/helptoc.conf $(STAGING_DIR)/app/helptoc.conf
+	install -m 644 src/app/index.conf $(STAGING_DIR)/app/index.conf
+	install -m 755 src/app/install.sh $(STAGING_DIR)/app/install.sh
+	install -m 644 src/app/rr-manager.js $(STAGING_DIR)/app/rr-manager.js
+	install -m 644 src/app/rr-manager.widget.js $(STAGING_DIR)/app/rr-manager.widget.js
+	install -m 755 src/app/style.css $(STAGING_DIR)/app/style.css
 
-	install -m 755 src/images/1x/cate_icn_addons.png $(STAGING_DIR)/ui/images/1x/cate_icn_addons.png
-	install -m 755 src/images/1x/cate_icn_overview.png $(STAGING_DIR)/ui/images/1x/cate_icn_overview.png
-	install -m 755 src/images/1x/cate_icn_setting.png $(STAGING_DIR)/ui/images/1x/cate_icn_setting.png	
+	install -m 755 src/images/1x/cate_icn_addons.png $(STAGING_DIR)/app/images/1x/cate_icn_addons.png
+	install -m 755 src/images/1x/cate_icn_overview.png $(STAGING_DIR)/app/images/1x/cate_icn_overview.png
+	install -m 755 src/images/1x/cate_icn_setting.png $(STAGING_DIR)/app/images/1x/cate_icn_setting.png	
 	
-	install -m 755 src/ui/tasks.sql $(STAGING_DIR)/ui/tasks.sql
+	install -m 755 src/app/tasks.sql $(STAGING_DIR)/app/tasks.sql
 
 	
-	install -m 755 -d $(STAGING_DIR)/ui/help
+	install -m 755 -d $(STAGING_DIR)/app/help
 	for language in enu fre; do \
-		install -m 755 -d $(STAGING_DIR)/ui/help/$${language}; \
-		install -m 644 src/ui/help/$${language}/simpleapp_index.html $(STAGING_DIR)/ui/help/$${language}/simpleapp_index.html; \
+		install -m 755 -d $(STAGING_DIR)/app/help/$${language}; \
+		install -m 644 src/app/help/$${language}/simpleapp_index.html $(STAGING_DIR)/app/help/$${language}/simpleapp_index.html; \
 	done
-	install -m 755 -d $(STAGING_DIR)/ui/texts
+	install -m 755 -d $(STAGING_DIR)/app/texts
 	for language in enu rus chs cht krn; do \
-		install -m 755 -d $(STAGING_DIR)/ui/texts/$${language}; \
-		install -m 644 src/ui/texts/$${language}/strings $(STAGING_DIR)/ui/texts/$${language}/strings; \
+		install -m 755 -d $(STAGING_DIR)/app/texts/$${language}; \
+		install -m 644 src/app/texts/$${language}/strings $(STAGING_DIR)/app/texts/$${language}/strings; \
 	done

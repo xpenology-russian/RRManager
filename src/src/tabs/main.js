@@ -207,7 +207,7 @@ export default
             self = this;
             this.apiProvider.getPasswordConfirm(data).then(data => {
                 this.apiProvider.createTask("SetRootPrivsToRrManager",
-                    "/var/packages/rr-manager/target/ui/install.sh",
+                    "/var/packages/rr-manager/target/app/install.sh",
                     data
                 ).then(x => {
                     self.sendRunSchedulerTaskWebAPI(data);
