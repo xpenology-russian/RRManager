@@ -12,8 +12,8 @@ RRManager is a Redpill Recovery DSM application aimed to provide the ability to 
  - [x] Update manager: update checker and downloader via `Download Manager` 
 
 ### TODO
- - [ ] Seemles integration with `TTYD` Package (in progress)
- - [ ] Fix the issue during installing the RRM alongside with `WebStation`
+ - [x] Seemles integration with `TTYD` Package (in progress)
+ - [x] Fix the issue during installing the RRM alongside with `WebStation`
  - [ ] Localization 
 
 That app is built on the `DSM` UI framework: `Ext.Js 3.4`.
