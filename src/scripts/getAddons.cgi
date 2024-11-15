@@ -1,97 +1,115 @@
-#!/usr/bin/python
+#!/usr/bin/env bash
 
-import os
-import json
-import sys,time
-import cgi
-import subprocess
-from pathlib import Path
-path_root = Path(__file__).parents[1]
-sys.path.append(str(path_root)+'/libs')
+# Enable error reporting
+set -e
 
-import libs.yaml as yaml
-print("Content-type: application/json\n")
+# Content-Type header for JSON output
+echo "Content-Type: application/json"
+echo ""
 
-arguments = cgi.FieldStorage()
-category = arguments.getvalue('category')
-#Function to read user configuration from a YAML file
-def read_user_config():
-    userConfigPath = "/mnt/p1/user-config.yml"
-    try:
-        with open(userConfigPath, 'r') as file:
-            return yaml.safe_load(file)  # Load and parse the YAML file
-    except IOError as e:
-        return f"Error reading user-config.yml: {e}"
-    except e:
-        return "{}"
+# Check if required commands are available
+for cmd in jq yq sudo /usr/bin/rr-loaderdisk.sh /usr/syno/synoman/webman/modules/authenticate.cgi; do
+    if ! command -v "$cmd" &> /dev/null; then
+        echo "{\"error\": \"Required command $cmd not found\"}"
+        exit 1
+    fi
+done
 
+# Function to read user configuration from a YAML file
+read_user_config() {
+    local user_config_path="/mnt/p1/user-config.yml"
+    if [[ -f "$user_config_path" ]]; then
+        cat "$user_config_path" | yq eval -o=json
+    else
+        echo '{"error": "Error reading user-config.yml: File not found"}'
+    fi
+}
 
+# Function to read manifests in subdirectories
+read_manifests_in_subdirs() {
+    local parent_directory=$1
+    local user_config=$2
+    local category=$3
+    local manifests=()
 
-def read_manifests_in_subdirs(parent_directory, userConfig, category=None):
-    manifests = []
-    addons = userConfig.get('addons')
-    try:
-        subdirs = next(os.walk(parent_directory))[1]
-    except Exception as e:
-        print(f"Error walking the directory {parent_directory}: {e}")
-        return manifests
+    local addons=$(echo "$user_config" | jq -r '.addons | join(" ")')
 
-    for subdir in subdirs:  # Iterates through each subdirectory
-        try:
-            manifest_path = os.path.join(parent_directory, subdir, 'manifest.yml')
-            if os.path.exists(manifest_path):  # Check if manifest.yml exists in the subdir
-                with open(manifest_path, 'r') as file:
-                    try:
-                        manifest = yaml.safe_load(file)
-                        manifest['installed'] = subdir in addons #userConfig['addons']
-                        # Filter by category if specified
-                        if category == "system":
-                            # Ensure 'system' key exists and is boolean True
-                            if manifest.get('system') is True:
-                                manifests.append(manifest)
-                        else:
-                            manifests.append(manifest)
-                    except yaml.YAMLError as exc:
-                        print(f"Error reading {manifest_path}: {exc}")
-        except Exception as e:
-            print(f"Error processing subdir {subdir}: {e}")
+    for subdir in "$parent_directory"/*/; do
+        local manifest_path="${subdir}manifest.yml"
+        if [[ -f "$manifest_path" ]]; then
+            local manifest=$(cat "$manifest_path" | yq eval -o=json)
+            if [[ $? -eq 0 ]]; then
+                local subdir_name=$(basename "$subdir")
+                local installed=$(echo "$addons" | grep -q "$subdir_name" && echo true || echo false)
+                manifest=$(echo "$manifest" | jq --arg installed "$installed" '. + {installed: ($installed | test("true"))}')
+                if [[ "$category" == "system" ]]; then
+                    if [[ $(echo "$manifest" | jq '.system') == "true" ]]; then
+                        manifests+=("$manifest")
+                    fi
+                else
+                    manifests+=("$manifest")
+                fi
+            else
+                echo "Error reading $manifest_path"
+            fi
+        fi
+    done
 
-    return manifests
+    # Join array elements with commas
+    local joined_manifests=$(IFS=,; echo "${manifests[*]}")
+    echo "[$joined_manifests]"
+}
+
+# Function to call the rr-loaderdisk.sh script with the given action
+call_mount_loader_script() {
+    local action=$1
+    sudo /usr/bin/rr-loaderdisk.sh "$action" >/dev/null 2>&1
+}
+
+# Function to mount the loader
+mount_loader() {
+    call_mount_loader_script "mountLoaderDisk"
+}
+
+# Function to unmount the loader
+unmount_loader() {
+    call_mount_loader_script "unmountLoaderDisk"
+}
 
 # Authenticate the user
-f = os.popen('/usr/syno/synoman/webman/modules/authenticate.cgi', 'r')
-user = f.read().strip()
-ADDONS_PATH = '/mnt/p3/addons/'
-response = {}
+USER=$(/usr/syno/synoman/webman/modules/authenticate.cgi)
 
-def callMountLoaderScript(action):
-    process = subprocess.run(['sudo','/usr/bin/rr-loaderdisk.sh', action],
-                                stdout=subprocess.DEVNULL,
-                                stderr=subprocess.DEVNULL)
-def mountLoader():
-    callMountLoaderScript('mountLoaderDisk')
+# Initialize response
+response='{}'
 
-def unmountLoader():
-    callMountLoaderScript('unmountLoaderDisk')
+ADDONS_PATH='/mnt/p3/addons/'
 
-if True: #len(user) > 0:
-    try:
-    # call function to mount the loader by calling the following bash /usr/bin/rr-loaderdisk.sh mountLoaderDisk
-        mountLoader()
-        # time.sleep(2)
-        response['test']='fff'
-        userConfig = read_user_config()
-        addons = read_manifests_in_subdirs(ADDONS_PATH,userConfig,category)
-        response['result'] = addons
-        response['userConfig'] = userConfig
-        response['success'] = True
-        response['total'] = len(addons)
-    # call function to unmount the loader by calling the following bash /usr/bin/rr-loaderdisk.sh unmountLoaderDisk
-        unmountLoader()
-    except Exception as e:
-        response['error'] = 'An exception occurred: {}'.format(e)
-else:
-    response["status"] = "not authenticated"
+if [ -n "$USER" ]; then
+    {
+        mount_loader
+
+        # Extract category from query string
+        category=$(echo "$QUERY_STRING" | grep -oP '(?<=category=)[^&]*')
+
+        # Read user configuration
+        user_config=$(read_user_config)
+        if echo "$user_config" | jq . > /dev/null 2>&1; then
+            # Read manifests
+            addons=$(read_manifests_in_subdirs "$ADDONS_PATH" "$user_config" "$category")
+
+            # Construct the response
+            response=$(jq -n --argjson result "$addons" --argjson userConfig "$user_config" --arg success true --arg total "$(echo "$addons" | jq length)" '{"success": $success, "result": $result, "userConfig": $userConfig, "total": $total}')
+        else
+            response=$(jq -n --arg error "Error reading user-config.yml" '{"success": false, "error": $error}')
+        fi
+
+        unmount_loader
+    } || {
+        response=$(jq -n --arg error "An exception occurred: $?" '{"success": false, "error": $error}')
+    }
+else
+    response=$(jq -n '{"status": "not authenticated"}')
+fi
 
 # Print the JSON response
-print(json.dumps(response))
+echo "$response"
