@@ -1,12 +1,3 @@
-import { Terminal } from '@xterm/xterm';
-import { WebLinksAddon } from '@xterm/addon-web-links';
-import { FitAddon } from '@xterm/addon-fit';
-import { ImageAddon } from '@xterm/addon-image';
-import { WebglAddon } from '@xterm/addon-webgl';
-import { CanvasAddon } from '@xterm/addon-canvas';
-import { AttachAddon } from '@xterm/addon-attach';
-import { Unicode11Addon } from '@xterm/addon-unicode11';
-import { Xterm } from '../utils/xterm';
 import { iframePanel } from '../components/iframePanel';
 export default Ext.define('SYNOCOMMUNITY.RRManager.Ssh.Main', {
     extend: 'SYNO.ux.Panel',

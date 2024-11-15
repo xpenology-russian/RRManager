@@ -23,7 +23,7 @@ export default
             that = this;
             return new Promise((resolve, reject) => {
                 let params = {
-                    additional: ["description", "description_enu", "dependent_packages", "beta", "distributor", "distributor_url", "maintainer", "maintainer_url", "dsm_apps", "dsm_app_page", "dsm_app_launch_name", "report_beta_url", "support_center", "startable", "installed_info", "support_url", "is_uninstall_pages", "install_type", "autoupdate", "silent_upgrade", "installing_progress", "ctl_uninstall", "updated_at", "status", "url", "available_operation", "install_type"],
+                    additional: ["maintainer","dsm_app_launch_name", "url", "available_operation", "install_type"],
                     ignore_hidden: false,
                 };
                 let args = {
