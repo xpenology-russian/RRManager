@@ -21,8 +21,7 @@ export default
             this.apiProvider.init(this.sendWebAPI.bind(this));
         },
         fillConfig: function (e) {
-            let t;
-            t = this.getListItems();
+            let tabs = this.getListItems();
             const i = {
                 cls: "syno-app-iscsi",
                 width: this.defaultWinSize.width,
@@ -30,7 +29,7 @@ export default
                 minWidth: this.defaultWinSize.width,
                 minHeight: this.defaultWinSize.height,
                 activePage: "SYNOCOMMUNITY.RRManager.Overview.Main",
-                listItems: t,
+                listItems: tabs,
             };
             return Ext.apply(i, e), i;
 
