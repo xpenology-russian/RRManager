@@ -230,57 +230,67 @@ export default
         onActivate: function () {
             const self = this;
             if (this.loaded) return;
-            self.appWin.setStatusBusy(null, null, 50);
+            //TODO: implement localization
+            self.appWin.setStatusBusy({ text: 'Loading system info...' });
             (async () => {
-                const [systemInfo, packages, rrCheckVersion] = await Promise.all([
-                    self.apiProvider.getSytemInfo(),
-                    self.apiProvider.getPackagesList(),
-                    self.apiProvider.checkRRVersion()
-                ]);
-
-                if (systemInfo && packages) {
-                    self.rrCheckVersion = rrCheckVersion;
-
-                    self.systemInfoTxt = `Welcome to RR Manager!`; // 
-                    const rrManagerPackage = packages.packages.find((packageInfo) => packageInfo.id == 'rr-manager');
+                // handle the error during the initialization
+                try {
+                    //await self.apiProvider.init(self.sendWebAPI.bind(self));
 
 
-                    self.panels?.healthPanel?.fireEvent(
-                        "select",
-                        self.panels?.healthPanel?.clickedBox
-                    );
-                    self.panels.statusBoxsPanel.fireEvent(
-                        "select",
-                        self.panels.statusBoxsPanel.clickedBox
-                    );
-                    await self.updateAllForm();
-                    var data = {
-                        text: `Model: ${systemInfo?.model}`,
-                        text2: `RAM: ${systemInfo?.ram} MB`,
-                        text3: `DSM version: ${systemInfo?.version_string}`,
-                        rrManagerVersion: `${rrManagerPackage?.version}`,
-                        rrVersion: self.rrConfig.rr_version
-                    };
-                    Ext.apply(data, self.data);
-                    if (!self.installed) {
-                        //create rr tmp folder
-                        self.rrManagerConfig = self.rrConfig.rr_manager_config;
-                        SYNO.API.currentManager.requestAPI('SYNO.FileStation.CreateFolder', "create", "2", {
-                            folder_path: `/${self.rrManagerConfig.SHARE_NAME}`,
-                            name: self.rrManagerConfig.RR_TMP_DIR,
-                            force_parent: false
-                        });
-                        self.installed = true;
+                    const [systemInfo, packages, rrCheckVersion] = await Promise.all([
+                        self.apiProvider.getSytemInfo(),
+                        self.apiProvider.getPackagesList(),
+                        self.apiProvider.checkRRVersion()
+                    ]);
+
+                    if (systemInfo && packages) {
+                        self.rrCheckVersion = rrCheckVersion;
+                        //TODO: implement localization
+                        self.systemInfoTxt = `Welcome to RR Manager!`; // 
+                        const rrManagerPackage = packages.packages.find((packageInfo) => packageInfo.id == 'rr-manager');
+
+                        self.panels?.healthPanel?.fireEvent(
+                            "select",
+                            self.panels?.healthPanel?.clickedBox
+                        );
+                        self.panels.statusBoxsPanel.fireEvent(
+                            "select",
+                            self.panels.statusBoxsPanel.clickedBox
+                        );
+                        await self.updateAllForm();
+                        var data = {
+                            text: `Model: ${systemInfo?.model}`,
+                            text2: `RAM: ${systemInfo?.ram} MB`,
+                            text3: `DSM version: ${systemInfo?.version_string}`,
+                            rrManagerVersion: `${rrManagerPackage?.version}`,
+                            rrVersion: self.rrConfig.rr_version
+                        };
+                        Ext.apply(data, self.data);
+                        if (!self.installed) {
+                            //create rr tmp folder
+                            self.rrManagerConfig = self.rrConfig.rr_manager_config;
+                            SYNO.API.currentManager.requestAPI('SYNO.FileStation.CreateFolder', "create", "2", {
+                                folder_path: `/${self.rrManagerConfig.SHARE_NAME}`,
+                                name: self.rrManagerConfig.RR_TMP_DIR,
+                                force_parent: false
+                            });
+                            self.installed = true;
+                        }
+                        self.panels?.healthPanel?.fireEvent("data_ready");
+                        self.panels?.statusBoxsPanel?.fireEvent("data_ready", data);
+                        self.loaded = true;
                     }
-                    self.panels?.healthPanel?.fireEvent("data_ready");
-                    self.panels?.statusBoxsPanel?.fireEvent("data_ready", data);
-                    self.loaded = true;
-                }
 
-                if (self.isUpdateAvailable(rrCheckVersion)) {
-                    self.showPrompt(self.helper.V('ui', 'prompt_update_available_title'),
-                        self.helper.formatString(self.helper.V('ui', 'prompt_update_available_message'), rrCheckVersion.tag),
-                        rrCheckVersion.notes, self.donwloadUpdate.bind(self));
+                    if (self.isUpdateAvailable(rrCheckVersion)) {
+                        self.showPrompt(self.helper.V('ui', 'prompt_update_available_title'),
+                            self.helper.formatString(self.helper.V('ui', 'prompt_update_available_message'), rrCheckVersion.tag),
+                            rrCheckVersion.notes, self.donwloadUpdate.bind(self));
+                    }
+                } catch (error) {
+                    self.appWin.clearStatusBusy();
+                    self.showMsg(`Error during RRM initialization: ${error}`);
+                    return;
                 }
             })();
             self.__checkDownloadFolder(self.__checkRequiredTasks.bind(self));

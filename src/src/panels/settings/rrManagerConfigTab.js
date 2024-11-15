@@ -7,15 +7,22 @@ export default
         fillConfig: function (e) {
             this.suspendLcwPrompt = !1;
             const t = {
+                //TODO: implement localization
                 title: "RR Manager Settings",
                 items: [
                     new SYNO.ux.FieldSet({
                         title: 'RR Manager',
                         collapsible: true,
                         name: 'rrManager',
+                        //TODO: implement localization
                         items: [
                             {
                                 boxLabel: 'Check for updates on App Startup',
+                                name: 'checkForUpdates',
+                                xtype: 'syno_checkbox',
+                            },
+                            {
+                                boxLabel: 'Enable TTYD package integration',
                                 name: 'checkForUpdates',
                                 xtype: 'syno_checkbox',
                             }
