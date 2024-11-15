@@ -9,18 +9,19 @@ USER=$(/usr/syno/synoman/webman/modules/authenticate.cgi)
 if [ "${USER}" = "" ]; then
   echo '{"error": "Security: user not authenticated"}'
 else
-  # Get DSM proxy configuration
-  proxy_response=$(synowebapi --exec api=SYNO.Core.Network.Proxy method=get version=1)
-  proxy_enable=$(echo "${proxy_response}" | jq -r '.data.enable')
-  proxy_host=$(echo "${proxy_response}" | jq -r '.data.http_host')
-  proxy_port=$(echo "${proxy_response}" | jq -r '.data.http_port')
-  proxy_username=$(echo "${proxy_response}" | jq -r '.data.username')
-  proxy_password=$(echo "${proxy_response}" | jq -r '.data.password')
+  # Read proxy configuration from /etc/proxy.conf
+  proxy_config=$(cat /etc/proxy.conf)
+  proxy_enable=$(echo "${proxy_config}" | grep 'proxy_enabled' | cut -d'=' -f2)
+  proxy_host=$(echo "${proxy_config}" | grep 'http_host' | cut -d'=' -f2)
+  proxy_port=$(echo "${proxy_config}" | grep 'http_port' | cut -d'=' -f2)
+  proxy_username=$(echo "${proxy_config}" | grep 'proxy_user' | cut -d'=' -f2)
+  proxy_password=$(echo "${proxy_config}" | grep 'proxy_pwd' | cut -d'=' -f2)
+
   # Define the URL for GitHub API
   URL="https://api.github.com/repos/RROrg/rr/releases/latest"
 
   # Construct proxy string if proxy is enabled
-  if [ "${proxy_enable}" = "true" ]; then
+  if [ "${proxy_enable}" = "yes" ]; then
     if [ -n "${proxy_username}" ] && [ -n "${proxy_password}" ]; then
       proxy="http://${proxy_username}:${proxy_password}@${proxy_host}:${proxy_port}"
     else
