@@ -3,6 +3,7 @@ export default
         extend: "SYNO.SDS.ModalWindow",
         constructor: function (a) {
             this.helper = a.helper;
+            this.updateHelper = a.updateHelper;
             this.owner = a.owner;
             this.parent = a.parent;
             this.apiProvider = a.apiProvider;
@@ -280,13 +281,14 @@ export default
                     uploadData: uploadData,
                     success: (response) => {
                         self.hideProgressIndicator();
-                        self.helper.updateFileInfoHandler({
+                        self.updateHelper.updateFileInfoHandler({
                             path: self.uploadedFilePath
                         });
                     },
                     failure: (response) => {
                         self.helper.unmask(self.parent);
-                        self.showMsg(self.helper.V('upload_file_dialog', 'file_uploading_failed_msg'));
+                        self.hideProgressIndicator();
+                        self.showMsg(`${self.helper.V('upload_file_dialog', 'file_uploading_failed_msg')}, Error: ${response.responseText}`);
                         console.error(self.helper.V('upload_file_dialog', 'file_uploading_failed_msg'), response);
                     },
                     progress: (progressEvent) => {

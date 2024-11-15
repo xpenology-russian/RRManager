@@ -2,6 +2,7 @@ import UpdateAvailable from '../components/dialogs/updateAvailableDialog';
 import PasswordConfirmDialog from '../components/dialogs/passwordConfirmDialog';
 import UploadFileDialog from '../components/dialogs/uploadFileDialog';
 import UpdateHelper from '../utils/updateHelper';
+import updateHelper from '../utils/updateHelper';
 export default
     Ext.define("SYNOCOMMUNITY.RRManager.Overview.Main", {
         extend: "SYNO.ux.Panel",
@@ -401,6 +402,7 @@ export default
                 parent: this,
                 owner: this.appWin,
                 helper: this.helper,
+                updateHelper: this.updateHelper,
                 id: "upload_file_dialog",
                 title: this.helper.V("ui", "upload_file_dialog_title"),
                 apiProvider: this.apiProvider

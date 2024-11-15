@@ -34,9 +34,7 @@ export default
             function runUpdate() {
                 self.apiProvider.getUpdateFileInfo(updateFilePath).then((responseText) => {
                     if (!responseText.success) {
-                        self.hideProgressIndicator();
                         self.helper.unmask(self.owner);
-                        self.owner.getEl()?.unmask();
                         self.showMsg(self.helper.formatString(self.helper.V('upload_file_dialog', 'unable_update_rr_msg'), responseText?.error ?? "No response from the scripts/readUpdateFile.cgi script."));
                         return;
                     }
@@ -47,7 +45,7 @@ export default
 
                     async function runUpdate() {
                         //show the spinner
-                        self.helper.mask(self.owner);
+                        self.helper.mask(self.appWin);
                         self.apiProvider.runScheduledTask('RunRrUpdate');
                         const maxCountOfRefreshUpdateStatus = 350;
                         let countUpdatesStatusAttemp = 0;
@@ -56,18 +54,18 @@ export default
                             const checksStatusResponse = await self.apiProvider.callCustomScript('checkUpdateStatus.cgi?filename=rr_update_progress');
                             if (!checksStatusResponse?.success) {
                                 clearInterval(updateStatusInterval);
-                                self.helper.unmask(self.owner);
+                                self.helper.unmask(self.appWin);
                                 self.showMsg(checksStatusResponse?.status);
                             }
                             const response = checksStatusResponse.result;
-                            self.helper.mask(self.owner, self.helper.formatString(self.helper.V('upload_file_dialog', 'update_rr_progress_msg'), response?.progress ?? "--", response?.progressmsg ?? "--"), 'x-mask-loading');
+                            self.helper.mask(self.appWin, self.helper.formatString(self.helper.V('upload_file_dialog', 'update_rr_progress_msg'), response?.progress ?? "--", response?.progressmsg ?? "--"), 'x-mask-loading');
                             countUpdatesStatusAttemp++;
                             if (countUpdatesStatusAttemp == maxCountOfRefreshUpdateStatus || response?.progress?.startsWith('-')) {
                                 clearInterval(updateStatusInterval);
-                                self.helper.unmask(self.owner);
+                                self.helper.unmask(self.appWin);
                                 self.showMsg(self.helper.formatString(self.helper.V('upload_file_dialog', 'update_rr_progress_msg'), response?.progress, response?.progressmsg));
                             } else if (response?.progress == '100') {
-                                self.helper.unmask(self.owner);
+                                self.helper.unmask(self.appWin);
                                 clearInterval(updateStatusInterval);
                                 self.showMsg(self.helper.V('upload_file_dialog', 'update_rr_completed'));
                             }

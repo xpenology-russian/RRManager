@@ -60,7 +60,7 @@ Ext.define("SYNOCOMMUNITY.RRManager.Widget", {
         self.runScheduledTask('MountLoaderDisk');
         const rrRR = await this.checkRRVersion();
         const rrConf = await this.getRRConf();
-        let rr_health_status = rrConf.rr_health == 'health' ? this.TYPE_NORMAL : this.TYPE_ATTENTION;
+        let rr_health_status = rrConf.rr_health == 'healthy' ? this.TYPE_NORMAL : this.TYPE_ATTENTION;
         self.setInfo({
             title: self.getTitle(rr_health_status),
             message: self.getStatusMessage(rr_health_status),
