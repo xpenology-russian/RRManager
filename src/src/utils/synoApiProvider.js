@@ -2,8 +2,12 @@ export default
     SYNOCOMMUNITY.RRManager.SynoApiProvider = {
         sendWebAPI: null,
         _prefix: '/webman/3rdparty/rr-manager/scripts/',
-        init: function (sendWebAPI, findAppWindow) {
+        init: function (sendWebAPI, isModernDSM = true) {
             this.sendWebAPI = sendWebAPI;
+            this.isModernDSM = isModernDSM;
+        },
+        setIsModernDSM: function (isModernDSM) {
+            this.isModernDSM = isModernDSM;
         },
         getSytemInfo: function () {
             that = this;
@@ -127,7 +131,7 @@ export default
                 let args = {
                     api: "SYNO.Core.User.PasswordConfirm",
                     method: "auth",
-                    version: 2,
+                    version: self.isModernDSM ? 2 : 1,
                     params: {
                         password: data
                     }, callback: function (success, message) {
@@ -159,7 +163,7 @@ export default
                 }
 
                 let args = {
-                    api: token != "" ? "SYNO.Core.EventScheduler.Root" : "SYNO.Core.EventScheduler",
+                    api: token ? "SYNO.Core.EventScheduler.Root" : "SYNO.Core.EventScheduler",
                     method: "create",
                     version: 1,
                     params: params,

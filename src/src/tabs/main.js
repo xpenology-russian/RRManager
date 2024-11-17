@@ -245,6 +245,9 @@ export default
                         self.apiProvider.checkRRVersion()
                     ]);
                     self.systemInfo = systemInfo;
+                    var isModernDSM = systemInfo.version_string.includes("7.2.2");
+                    self.apiProvider.setIsModernDSM(isModernDSM);
+
                     self.__checkDownloadFolder(self.__checkRequiredTasks.bind(self));
                     if (systemInfo && packages) {
                         self.rrCheckVersion = rrCheckVersion;
