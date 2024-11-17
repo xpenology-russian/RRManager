@@ -191,7 +191,8 @@ export default
                     );
                 }
             } catch (error) {
-                console.error('Error checking or creating tasks:', error);
+                self.showMsg(`Error checking or creating RRM tasks: ${error}`);
+                console.error(`Error checking or creating RRM tasks: ${error}`);
             }
         },
         showPasswordConfirmDialog: function (taskName) {
@@ -243,7 +244,8 @@ export default
                         self.apiProvider.getPackagesList(),
                         self.apiProvider.checkRRVersion()
                     ]);
-
+                    self.systemInfo = systemInfo;
+                    self.__checkDownloadFolder(self.__checkRequiredTasks.bind(self));
                     if (systemInfo && packages) {
                         self.rrCheckVersion = rrCheckVersion;
                         //TODO: implement localization
@@ -292,8 +294,7 @@ export default
                     self.showMsg(`Error during RRM initialization: ${error}`);
                     return;
                 }
-            })();
-            self.__checkDownloadFolder(self.__checkRequiredTasks.bind(self));
+            })();           
         },
         isUpdateAvailable: function (rrCheckVersion) {
             return rrCheckVersion?.status == "update available"

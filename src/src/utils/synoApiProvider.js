@@ -23,7 +23,7 @@ export default
             that = this;
             return new Promise((resolve, reject) => {
                 let params = {
-                    additional: ["maintainer","dsm_app_launch_name", "url", "available_operation", "install_type"],
+                    additional: ["maintainer", "dsm_app_launch_name", "url", "available_operation", "install_type"],
                     ignore_hidden: false,
                 };
                 let args = {
@@ -50,10 +50,10 @@ export default
                 let args = {
                     api: 'SYNO.Core.TaskScheduler',
                     method: 'list',
-                    version: 3,
+                    version: 2,
                     params: params,
-                    callback: function (success, message) {
-                        success ? resolve(message) : reject('Unable to get packages!');
+                    callback: function (success, response) {
+                        success ? resolve(response) : reject(`Unable to get DSM task list!, success: ${success}, code: ${response.code}`);
                     }
                 };
                 that.sendWebAPI(args);
