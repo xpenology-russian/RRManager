@@ -13,7 +13,7 @@ export default
         onDataReady: function () {
             let status = "normal";
             this.iconTemplate.overwrite(this.getComponent("icon").getEl(), { status: status, 
-                style:"background-image:url('webapi/entry.cgi?api=SYNO.Core.Synohdpack&version=1&method=getHDIcon&res=72&retina=false&path=webman/3rdparty/rr-manager/images/rr-manager-{0}.png&app_version=0.1')" 
+                style:"background-image:url('webapi/entry.cgi?api=SYNO.Core.Synohdpack&version=1&method=getHDIcon&res=72&retina=false&path=webman/3rdparty/rr-manager/images/rr-manager-{0}.png&app_version=0.1'); background-size: cover;"
             }),
                 this.titleTemplate.overwrite(this.upperPanel.getComponent("title").getEl(), {
                     status: status,
