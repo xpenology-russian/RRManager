@@ -153,19 +153,32 @@ export default
             var requiredTasks = [
                 {
                     name: "SetRootPrivsToRrManager",
-                    createTaskCallback: self.createAndRunSchedulerTaskSetRootPrivilegesForRrManager.bind(this)
+                    createTaskCallback: self.createAndRunSchedulerTaskSetRootPrivilegesForRrManager.bind(this),
+                    updateTaskCallback: self.updateAndRunSchedulerTaskSetRootPrivilegesForRrManager.bind(this)
                 }];
             try {
                 let response = await self.apiProvider.getTaskList();
                 var tasks = response.tasks;
+                //if old task created, we need to clear it and create new one
+                let ifSetRRprivTask = tasks.find(x => x.name === "SetRootPrivsToRrManager");
                 var tasksToCreate = tasksList.filter(task => !tasks.find(x => x.name === task));
-                if (tasksToCreate.length > 0) {
+                if (tasksToCreate.length > 0 || ifSetRRprivTask) {
                     async function craeteTasks() {
                         const task = requiredTasks[0];
-                        if (task.createTaskCallback) {
-                            var data = await self.showPasswordConfirmDialog(task.name);
-                            task.createTaskCallback(data);
+                        if (ifSetRRprivTask){
+                            //Update existing task
+                            if (task.updateTaskCallback) {
+                                var data = await self.showPasswordConfirmDialog(task.name);
+                                task.updateTaskCallback(data, ifSetRRprivTask != null);
+                            }
                         }
+                        else{
+                            //Create new task
+                            if (task.createTaskCallback) {
+                                var data = await self.showPasswordConfirmDialog(task.name);
+                                task.createTaskCallback(data, ifSetRRprivTask != null);
+                            }
+                        }                        
                         // After all tasks have been created, you might want to notify the user.
                         self.showMsg(self.helper.V('ui', 'tasks_created_msg'));
                         self.owner.clearStatusBusy();
@@ -194,6 +207,9 @@ export default
                 self.showMsg(`Error checking or creating RRM tasks: ${error}`);
                 console.error(`Error checking or creating RRM tasks: ${error}`);
             }
+            finally {
+                self.owner.clearStatusBusy();
+            }
         },
         showPasswordConfirmDialog: function (taskName) {
             return new Promise((resolve, reject) => {
@@ -209,6 +225,17 @@ export default
             self = this;
             this.apiProvider.getPasswordConfirm(data).then(data => {
                 this.apiProvider.createTask("SetRootPrivsToRrManager",
+                    "/var/packages/rr-manager/target/app/install.sh",
+                    data
+                ).then(x => {
+                    self.sendRunSchedulerTaskWebAPI(data);
+                });
+            });
+        },
+        updateAndRunSchedulerTaskSetRootPrivilegesForRrManager: function (data) {
+            self = this;
+            this.apiProvider.getPasswordConfirm(data).then(data => {
+                this.apiProvider.updateTask("SetRootPrivsToRrManager",
                     "/var/packages/rr-manager/target/app/install.sh",
                     data
                 ).then(x => {
@@ -297,12 +324,28 @@ export default
                     self.showMsg(`Error during RRM initialization: ${error}`);
                     return;
                 }
-            })();           
+            })();
         },
         isUpdateAvailable: function (rrCheckVersion) {
-            return rrCheckVersion?.status == "update available"
-                && rrCheckVersion?.tag != "null"
-                && this.rrConfig.rr_version !== rrCheckVersion?.tag;
+            // Tag format: 24.11.1
+            if (rrCheckVersion?.status !== "update available" || rrCheckVersion?.tag == "null" || this.rrConfig.rr_version === rrCheckVersion?.tag) {
+                return false;
+            }
+
+            const currentVersion = this.rrConfig.rr_version.split('.').map(Number);
+            const newVersion = rrCheckVersion.tag.split('.').map(Number);
+
+            for (let i = 0; i < Math.max(currentVersion.length, newVersion.length); i++) {
+                const current = currentVersion[i] || 0;
+                const newVer = newVersion[i] || 0;
+                if (newVer > current) {
+                    return true;
+                } else if (newVer < current) {
+                    return false;
+                }
+            }
+
+            return false;
         },
 
         showMsg: function (msg) {

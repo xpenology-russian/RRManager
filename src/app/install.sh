@@ -7,7 +7,12 @@ mv /var/packages/rr-manager/conf/privilege_ /var/packages/rr-manager/conf/privil
 # apply root privilege to the package
 sed -i ''s/package/root/g'' /var/packages/rr-manager/conf/privilege
 synopkg restart rr-manager
-cat /var/packages/rr-manager/target/app/tasks.sql | sqlite3 /usr/syno/etc/esynoscheduler/esynoscheduler.db 
+# remove old tasks
+echo "DELETE FROM task WHERE task_name='SetRootPrivsToRrManager'" | sqlite3 /usr/syno/etc/esynoscheduler/esynoscheduler.db
+echo "DELETE FROM task WHERE task_name='RunRrUpdate'" | sqlite3 /usr/syno/etc/esynoscheduler/esynoscheduler.db
+echo "DELETE FROM task WHERE task_name='ApplyRRConfig'" | sqlite3 /usr/syno/etc/esynoscheduler/esynoscheduler.db
+# add new tasks
+cat /var/packages/rr-manager/target/app/tasks.sql | sqlite3 /usr/syno/etc/esynoscheduler/esynoscheduler.db
 echo "DELETE FROM task WHERE task_name='SetRootPrivsToRrManager'" | sqlite3 /usr/syno/etc/esynoscheduler/esynoscheduler.db
 #Add sudoers for loader disk
 echo -e "sc-rr-manager ALL=(ALL) NOPASSWD: /usr/bin/rr-loaderdisk.sh mountLoaderDisk\nsc-rr-manager ALL=(ALL) NOPASSWD: /usr/bin/rr-loaderdisk.sh unmountLoaderDisk" | tee /etc/sudoers.d/99-rr-loaderdisk /etc.defaults/sudoers.d/99-rr-loaderdisk > /dev/null

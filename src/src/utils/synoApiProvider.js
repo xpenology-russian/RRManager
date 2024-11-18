@@ -175,6 +175,39 @@ export default
                 that.sendWebAPI(args);
             });
         },
+        updateTask: function (task_name, operation, token) {
+            that = this;
+            return new Promise((resolve, reject) => {
+                let params = {
+                    task_name: task_name,
+                    owner: { 0: "root" },
+                    event: "bootup",
+                    enable: false,
+                    depend_on_task: "",
+                    notify_enable: false,
+                    notify_mail: "",
+                    notify_if_error: false,
+                    operation_type: "script",
+                    operation: decodeURIComponent(operation)
+                };
+
+                if (token != "") {
+                    params.SynoConfirmPWToken = token
+                }
+
+                let args = {
+                    api: token ? "SYNO.Core.EventScheduler.Root" : "SYNO.Core.EventScheduler",
+                    method: "set",
+                    version: 1,
+                    params: params,
+                    callback: function (success, message) {
+                        success ? resolve(message) : reject('Unable to create task!');
+                    },
+                    scope: this,
+                };
+                that.sendWebAPI(args);
+            });
+        },
         sendRunSchedulerTaskWebAPI: function (token) {
             args = {
                 api: "SYNO.Core.EventScheduler",
