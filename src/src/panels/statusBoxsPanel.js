@@ -72,6 +72,7 @@ export default
                 ),
             ];
             const panelConfig = {
+                hidden: true,
                 cls: "iscsi-overview-status-panel",
                 layout: "hbox",
                 layoutConfig: { align: "stretch" },
@@ -94,6 +95,7 @@ export default
         },
         loadData: function (data) {
             const self = this;
+            self.show();
             self.statusBoxes.forEach((statusBox) => {
                 if (statusBox.tpl && statusBox.tpl.data) {
                     Ext.apply(statusBox.tpl.data, data);
