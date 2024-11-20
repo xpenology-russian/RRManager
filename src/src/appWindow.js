@@ -18,10 +18,14 @@ export default
         constructor: function (config) {
             const t = this;
             this.apiProvider.init(this.sendWebAPI.bind(this));
-            t.callParent([t.fillConfig(config)]);           
+            t.callParent([t.fillConfig(config)]);
         },
         fillConfig: function (e) {
-            let tabs = this.getListItems();
+            //get app setting from src\app\config
+            const jsConfig =e.appInstance.initialConfig?.taskButton?.jsConfig;
+            //check if the console tab is enabled
+            const showConsoleTab = jsConfig?.enableTTYDTab;
+            let tabs = this.getListTabs(showConsoleTab);
             const i = {
                 cls: "syno-app-iscsi",
                 width: this.defaultWinSize.width,
@@ -32,9 +36,8 @@ export default
                 listItems: tabs,
             };
             return Ext.apply(i, e), i;
-
         },
-        getListItems: function () {
+        getListTabs: function (showConsoleTab) {
             let items = [
                 {
                     text: this.helper.V('ui', 'tab_general'),
@@ -52,33 +55,18 @@ export default
                     fn: "SYNOCOMMUNITY.RRManager.Debug.Main",
                 },
                 {
-                    text: 'Console',
-                    iconCls: "icon-terminal-and-SNMP",
-                    fn: "SYNOCOMMUNITY.RRManager.Ssh.Main",
-                },
-                {
                     text: this.helper.V('ui', 'tab_configuration'),
                     iconCls: "icon-rr-setting",
                     fn: "SYNOCOMMUNITY.RRManager.Setting.Main",
                 }
             ];
-            // // Fetch conditionally add a tab if `ttydPackage` is available
-            // this.apiProvider.getPackagesList().then((response) => {
-            //     let ttydPackage = response.packages.find((pkg) => pkg.id === 'TTYD');
-            //     if (ttydPackage) {
-            //         let newTab = {
-            //             text: "Console",
-            //             iconCls: "icon-terminal-and-SNMP",
-            //             fn: "SYNOCOMMUNITY.RRManager.Ssh.Main",
-            //         };
-
-            //         // Check if the tab already exists to prevent duplicates
-            //         if (!items.find(tab => tab.fn === newTab.fn)) {
-            //             items.push(newTab);
-            //         }
-            //     }
-            //     return items;
-            // });
+            if (showConsoleTab) {
+                items.push({
+                    text: 'Console',
+                    iconCls: "icon-terminal-and-SNMP",
+                    fn: "SYNOCOMMUNITY.RRManager.Ssh.Main",
+                });
+            }
             return items;
         },
         onOpen: function (a) {

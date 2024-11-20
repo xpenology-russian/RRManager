@@ -18,12 +18,12 @@ export default
                         items: [
                             {
                                 boxLabel: 'Check for updates on App Startup',
-                                name: 'checkForUpdates',
+                                name: 'checkRRForUpdates',
                                 xtype: 'syno_checkbox',
                             },
                             {
                                 boxLabel: 'Enable TTYD package integration',
-                                name: 'checkForUpdates',
+                                name: 'enableTTYDTab',
                                 xtype: 'syno_checkbox',
                             }
                         ]

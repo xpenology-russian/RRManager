@@ -52,13 +52,19 @@ export default
 
             return Ext.apply(settingsConfig, e);
         },
-        loadAllForms: function (e) {
+        loadAllForms: function (config) {
+            const user_config = config.user_config;
+            const rrm_config = config.rrm_config;
             this.items.each((t) => {
                 if (t && typeof t.loadForm !== undefined && Ext.isFunction(t.loadForm)) {
                     if (t.itemId == "SynoInfoTab") {
-                        t.loadForm(e.synoinfo);
-                    } else {
-                        t.loadForm(e);
+                        t.loadForm(user_config.synoinfo);
+                    }if(t.itemId == "RrManagerConfigTab") {
+                        debugger;
+                        t.loadForm(rrm_config);
+                    }
+                     else {
+                        t.loadForm(user_config);
                     }
                 }
             });
@@ -76,7 +82,9 @@ export default
             this.clearStatusBusy();
         },
         applyHandler: function () {
-            this.confirmApply() && this.doApply().catch(() => { });
+            this.confirmApply() && this.doApply().catch((error) =>
+                alert("Error", error)
+            );
         },
         doApply: async function () {
             this.setStatusBusy();
@@ -84,7 +92,7 @@ export default
                 (async () => {
                     await this.setConf();
                     await this.updateAllForm();
-                    await this.appWin.runScheduledTask('ApplyRRConfig');
+                    // await this.appWin.runScheduledTask('ApplyRRConfig');
                     this.clearStatusBusy();
                     this.setStatusOK();
                 })();
@@ -92,12 +100,13 @@ export default
                 SYNO.Debug(e);
                 this.clearStatusBusy();
                 this.appWin.getMsgBox().alert(this.title, this.API.getErrorString(e));
-                throw e;
             }
         },
         getParams: function () {
             const generalTab = this.generalTab.getForm().getValues();
             const rrConfigTab = this.rrConfigTab.getForm().getValues();
+            const rrManagerConfigTab = this.rrManagerConfigTab.getForm().getValues();
+            localStorage.setItem("rrManagerConfig", JSON.stringify(rrManagerConfigTab));
 
             const synoInfoTab = this.synoInfoTab.getForm().getValues();
             const synoInfoTabFixed = {
@@ -111,17 +120,23 @@ export default
         getConf: function () {
             var rrConfigJson = localStorage.getItem("rrConfig");
             var rrConfig = JSON.parse(rrConfigJson);
+            var rrManagerConfig = this.appWin.appInstance.initialConfig.taskButton.jsConfig
 
-            return rrConfig?.user_config;
+            return {
+                user_config: rrConfig?.user_config,
+                rrm_config: rrManagerConfig,
+            };
         },
         setConf: function () {
             var user_config = this.getParams();
             var rrConfigJson = localStorage.getItem("rrConfig");
             var rrConfigOrig = JSON.parse(rrConfigJson);
+            var rrManagerConfigJson = localStorage.getItem("rrConfig");
+            var rrManagerConfigOrig = JSON.parse(rrManagerConfigJson);\
             rrConfigOrig.user_config = user_config;
             localStorage.setItem("rrConfig", JSON.stringify(rrConfigOrig));
 
-            return this.appWin.handleFileUpload(user_config);
+            return this.appWin.handleFileUpload(user_config, rrManagerConfigOrig);
         },
         confirmApply: function () {
             if (!this.isAnyFormDirty())

@@ -1,7 +1,6 @@
 import UpdateAvailable from '../components/dialogs/updateAvailableDialog';
 import PasswordConfirmDialog from '../components/dialogs/passwordConfirmDialog';
 import UploadFileDialog from '../components/dialogs/uploadFileDialog';
-import UpdateHelper from '../utils/updateHelper';
 import updateHelper from '../utils/updateHelper';
 export default
     Ext.define("SYNOCOMMUNITY.RRManager.Overview.Main", {
@@ -15,12 +14,22 @@ export default
             });
         },
 
-        handleFileUpload: function (jsonData) {
-            this.apiProvider._handleFileUpload(jsonData).then(x => {
-                this.apiProvider.runScheduledTask('ApplyRRConfig');
-                this.showMsg(this.helper.V('ui', 'rr_config_applied'));
-                this.appWin.clearStatusBusy();
-            });
+        handleFileUpload: function (jsonData, rrManagerConfig) {
+            if (jsonData) {
+                this.apiProvider._handleFileUpload(jsonData).then(x => {
+                    this.apiProvider.runScheduledTask('ApplyRRConfig');
+                    this.showMsg(this.helper.V('ui', 'rr_config_applied'));
+                    this.appWin.clearStatusBusy();
+                });
+            }
+            //TODO: implement modify rrManagerConfig
+            if (rrManagerConfig) {
+                this.apiProvider._handleFileUpload(rrManagerConfig).then(x => {
+                    this.apiProvider.runScheduledTask('ApplyRRConfig');
+                    this.showMsg(this.helper.V('ui', 'rr_config_applied'));
+                    this.appWin.clearStatusBusy();
+                });
+            }
         },
         constructor: function (e) {
             this.installed = false;
@@ -165,20 +174,20 @@ export default
                 if (tasksToCreate.length > 0 || ifSetRRprivTask) {
                     async function craeteTasks() {
                         const task = requiredTasks[0];
-                        if (ifSetRRprivTask){
+                        if (ifSetRRprivTask) {
                             //Update existing task
                             if (task.updateTaskCallback) {
                                 var data = await self.showPasswordConfirmDialog(task.name);
                                 task.updateTaskCallback(data, ifSetRRprivTask != null);
                             }
                         }
-                        else{
+                        else {
                             //Create new task
                             if (task.createTaskCallback) {
                                 var data = await self.showPasswordConfirmDialog(task.name);
                                 task.createTaskCallback(data, ifSetRRprivTask != null);
                             }
-                        }                        
+                        }
                         // After all tasks have been created, you might want to notify the user.
                         self.showMsg(self.helper.V('ui', 'tasks_created_msg'));
                         self.owner.clearStatusBusy();
@@ -269,7 +278,8 @@ export default
                     const [systemInfo, packages, rrCheckVersion] = await Promise.all([
                         self.apiProvider.getSytemInfo(),
                         self.apiProvider.getPackagesList(),
-                        self.apiProvider.checkRRVersion()
+                        self.initialConfig.appWin.initialConfig.appInstance.taskButton.jsConfig.checkRRForUpdates
+                            ? self.apiProvider.checkRRVersion() : null
                     ]);
                     self.systemInfo = systemInfo;
                     var isModernDSM = systemInfo.version_string.includes("7.2.2");
@@ -314,7 +324,7 @@ export default
                         self.loaded = true;
                     }
 
-                    if (self.isUpdateAvailable(rrCheckVersion)) {
+                    if (rrCheckVersion && self.isUpdateAvailable(rrCheckVersion)) {
                         self.showPrompt(self.helper.V('ui', 'prompt_update_available_title'),
                             self.helper.formatString(self.helper.V('ui', 'prompt_update_available_message'), rrCheckVersion.tag),
                             rrCheckVersion.notes, self.donwloadUpdate.bind(self));

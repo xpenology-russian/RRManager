@@ -9,7 +9,9 @@
             "allowMultiInstance": false,
             "allUsers": false,
             "appWindow": "SYNOCOMMUNITY.RRManager.AppWindow",
-            "depend": ["SYNOCOMMUNITY.RRManager.AppWindow"]
+            "depend": ["SYNOCOMMUNITY.RRManager.AppWindow"],
+            "enableTTYDTab": false,
+            "checkRRForUpdates": false
         },
         "SYNOCOMMUNITY.RRManager.AppWindow": {
             "type": "lib",
