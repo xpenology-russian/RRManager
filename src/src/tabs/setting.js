@@ -132,7 +132,7 @@ export default
             var rrConfigJson = localStorage.getItem("rrConfig");
             var rrConfigOrig = JSON.parse(rrConfigJson);
             var rrManagerConfigJson = localStorage.getItem("rrConfig");
-            var rrManagerConfigOrig = JSON.parse(rrManagerConfigJson);\
+            var rrManagerConfigOrig = JSON.parse(rrManagerConfigJson);
             rrConfigOrig.user_config = user_config;
             localStorage.setItem("rrConfig", JSON.stringify(rrConfigOrig));
 
